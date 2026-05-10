@@ -6,1216 +6,301 @@
   <title>Kitchen 厨房 — 菜谱与冰箱，一手掌握</title>
   <meta name="description" content="Kitchen 厨房：个人菜谱库、冰箱库存、AI 智能录入与推荐。本地优先，可选 iCloud、共享冰箱与快捷指令。适用于 iPhone 与 iPad。" />
   <meta name="theme-color" content="#fbfbfd" />
-  <!-- 产品介绍页；隐私见 index.html。同步 app-icon.png 到公开 Kitchen-web。 -->
-  <script>
-    window.KITCHEN_APP_STORE_URL = "https://apps.apple.com/app/idREPLACE_ME";
-  </script>
+  <!-- 版式与信息层级参考 Apple 产品页（如 apple.com/uk/iphone-17-pro/），非 Apple 官方页面。 -->
+  <script>window.KITCHEN_APP_STORE_URL = "https://apps.apple.com/app/idREPLACE_ME";</script>
   <style>
-    :root {
-      --bg: #fbfbfd;
-      --bg-elevated: #ffffff;
-      --bg-alt: #f5f5f7;
-      --text: #1d1d1f;
-      --text-secondary: #6e6e73;
-      --text-tertiary: #86868b;
-      --line: rgba(0, 0, 0, 0.08);
-      --accent: #ff6452;
-      --accent-soft: rgba(255, 100, 82, 0.12);
-      --hero-mesh-1: #fff5f2;
-      --hero-mesh-2: #f5f5f7;
-      --hero-mesh-3: #eef3ff;
-      --nav-h: 48px;
-      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-      --radius-lg: 24px;
-      --radius-xl: 32px;
-      --icon-radius: 22.37%;
-      --shadow-soft: 0 2px 16px rgba(0, 0, 0, 0.04);
-      --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.06);
-      --shadow-icon: 0 20px 48px rgba(255, 100, 82, 0.18), 0 8px 24px rgba(0, 0, 0, 0.06);
-      --pad-x: max(20px, env(safe-area-inset-left));
-      --pad-x-right: max(20px, env(safe-area-inset-right));
-      --content-max: min(1120px, 100% - var(--pad-x) - var(--pad-x-right));
-      --read-max: 38rem;
-      --bp-desktop: 1068px;
-    }
-
-    @media (min-width: 1068px) {
-      :root {
-        --nav-h: 52px;
-        --radius-lg: 28px;
-        --radius-xl: 36px;
-      }
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #000000;
-        --bg-elevated: #1d1d1f;
-        --bg-alt: #0d0d0f;
-        --text: #f5f5f7;
-        --text-secondary: #a1a1a6;
-        --text-tertiary: #6e6e73;
-        --line: rgba(255, 255, 255, 0.1);
-        --accent-soft: rgba(255, 100, 82, 0.2);
-        --hero-mesh-1: #1a0a08;
-        --hero-mesh-2: #0d0d0f;
-        --hero-mesh-3: #0a1020;
-        --shadow-soft: 0 4px 28px rgba(0, 0, 0, 0.35);
-        --shadow-card: 0 16px 48px rgba(0, 0, 0, 0.4);
-        --shadow-icon: 0 24px 56px rgba(0, 0, 0, 0.45);
-      }
-    }
-
-    *, *::before, *::after { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
-      .nav-drawer,
-      .nav-backdrop,
-      .nav-menu-icon::before,
-      .nav-menu-icon::after { transition: none !important; }
-    }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      font-size: 17px;
-      line-height: 1.47059;
-      letter-spacing: -0.022em;
-      color: var(--text);
-      background: var(--bg);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    @media (min-width: 1068px) {
-      body {
-        font-size: 18px;
-        line-height: 1.5;
-      }
-    }
-
-    body.nav-open {
-      overflow: hidden;
-      touch-action: none;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    a:hover { opacity: 0.88; }
-
-    /* —— 导航：桌面横排 / 手机抽屉 —— */
-    .nav-wrap {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      height: var(--nav-h);
-      transition: background 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out),
-        border-color 0.35s var(--ease-out);
-      border-bottom: 1px solid transparent;
-    }
-
-    .nav-wrap.is-scrolled {
-      background: color-mix(in srgb, var(--bg) 82%, transparent);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      backdrop-filter: saturate(180%) blur(20px);
-      border-bottom-color: var(--line);
-      box-shadow: var(--shadow-soft);
-    }
-
-    @supports not (backdrop-filter: blur(20px)) {
-      .nav-wrap.is-scrolled { background: var(--bg); }
-    }
-
-    .nav {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 var(--pad-x-right) 0 var(--pad-x);
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: clamp(17px, 2.5vw, 19px);
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      flex-shrink: 0;
-      z-index: 1002;
-    }
-
-    .nav-brand img {
-      width: 28px;
-      height: 28px;
-      border-radius: var(--icon-radius);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    @media (min-width: 1068px) {
-      .nav-brand img {
-        width: 32px;
-        height: 32px;
-      }
-    }
-
-    .nav-brand span {
-      font-weight: 500;
-      color: var(--text-secondary);
-      font-size: 0.88em;
-    }
-
-    .nav-desktop {
-      display: none;
-      align-items: center;
-      gap: 28px;
-    }
-
-    @media (min-width: 1068px) {
-      .nav-desktop {
-        display: flex;
-      }
-    }
-
-    .nav-desktop a {
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: -0.01em;
-      color: var(--text-secondary);
-      white-space: nowrap;
-    }
-
-    .nav-desktop a:hover {
-      color: var(--text);
-      opacity: 1;
-    }
-
-    .nav-cta {
-      font-size: 12px;
-      font-weight: 500;
-      padding: 7px 16px;
-      border-radius: 999px;
-      background: var(--accent);
-      color: #fff !important;
-    }
-
-    .nav-cta:hover {
-      opacity: 0.94;
-    }
-
-    .nav-menu-btn {
-      display: grid;
-      place-items: center;
-      width: 44px;
-      height: 44px;
-      margin-right: -10px;
-      padding: 0;
-      border: none;
-      border-radius: 12px;
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-      z-index: 1002;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    @media (min-width: 1068px) {
-      .nav-menu-btn {
-        display: none;
-      }
-    }
-
-    .nav-menu-btn:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    .nav-menu-icon {
-      position: relative;
-      width: 18px;
-      height: 1.5px;
-      background: currentColor;
-      border-radius: 1px;
-      transition: background 0.2s ease;
-    }
-
-    .nav-menu-icon::before,
-    .nav-menu-icon::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      width: 18px;
-      height: 1.5px;
-      background: currentColor;
-      border-radius: 1px;
-      transition: transform 0.3s var(--ease-out), top 0.3s var(--ease-out);
-    }
-
-    .nav-menu-icon::before {
-      top: -6px;
-    }
-
-    .nav-menu-icon::after {
-      top: 6px;
-    }
-
-    .nav-open .nav-menu-icon {
-      background: transparent;
-    }
-
-    .nav-open .nav-menu-icon::before {
-      top: 0;
-      transform: rotate(45deg);
-    }
-
-    .nav-open .nav-menu-icon::after {
-      top: 0;
-      transform: rotate(-45deg);
-    }
-
-    .nav-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      top: var(--nav-h);
-      background: rgba(0, 0, 0, 0.35);
-      z-index: 1000;
-      opacity: 0;
-      transition: opacity 0.35s var(--ease-out);
-    }
-
-    @media (max-width: 1067px) {
-      .nav-open .nav-backdrop {
-        display: block;
-        opacity: 1;
-      }
-    }
-
-    .nav-drawer {
-      position: fixed;
-      top: var(--nav-h);
-      right: 0;
-      bottom: 0;
-      width: min(100%, 400px);
-      max-width: 100vw;
-      background: var(--bg-elevated);
-      z-index: 1001;
-      padding: 24px var(--pad-x) max(32px, env(safe-area-inset-bottom));
-      transform: translateX(100%);
-      transition: transform 0.4s var(--ease-out);
-      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    @media (min-width: 1068px) {
-      .nav-drawer {
-        display: none;
-      }
-    }
-
-    .nav-open .nav-drawer {
-      transform: translateX(0);
-    }
-
-    .nav-drawer a {
-      display: block;
-      font-size: 20px;
-      font-weight: 500;
-      letter-spacing: -0.02em;
-      padding: 16px 4px;
-      border-bottom: 1px solid var(--line);
-      color: var(--text);
-    }
-
-    .nav-drawer a:last-of-type {
-      border-bottom: none;
-    }
-
-    .nav-drawer .drawer-cta {
-      margin-top: 28px;
-      text-align: center;
-      font-size: 17px;
-      padding: 14px 20px;
-      border-radius: 14px;
-      border-bottom: none;
-      background: var(--accent);
-      color: #fff !important;
-    }
-
-    .nav-drawer .drawer-sub {
-      margin: 20px 0 8px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-tertiary);
-    }
-
-    main {
-      padding-top: var(--nav-h);
-    }
-
-    /* —— Hero：手机上图下文 / 桌面左文右图 —— */
-    .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 64px var(--pad-x) 80px;
-    }
-
-    @media (min-width: 1068px) {
-      .hero {
-        padding: 96px var(--pad-x) 120px;
-      }
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(90% 55% at 50% 0%, var(--hero-mesh-1) 0%, transparent 52%),
-        radial-gradient(55% 40% at 100% 20%, var(--hero-mesh-3) 0%, transparent 42%),
-        radial-gradient(50% 35% at 0% 40%, var(--hero-mesh-2) 0%, transparent 45%),
-        var(--bg);
-      z-index: 0;
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 48px;
-      text-align: center;
-    }
-
-    @media (min-width: 1068px) {
-      .hero-inner {
-        display: grid;
-        grid-template-columns: 1.05fr 0.95fr;
-        gap: 64px 80px;
-        align-items: center;
-        text-align: left;
-      }
-
-      .hero-copy {
-        order: 1;
-      }
-
-      .hero-icon-wrap {
-        order: 2;
-      }
-    }
-
-    .hero-copy {
-      max-width: 40rem;
-      width: 100%;
-    }
-
-    @media (min-width: 1068px) {
-      .hero-copy {
-        max-width: none;
-      }
-    }
-
-    .hero-icon-wrap {
-      width: min(200px, 56vw);
-      aspect-ratio: 1;
-      flex-shrink: 0;
-    }
-
-    @media (min-width: 734px) and (max-width: 1067px) {
-      .hero-icon-wrap {
-        width: min(220px, 42vw);
-      }
-    }
-
-    @media (min-width: 1068px) {
-      .hero-icon-wrap {
-        width: min(280px, 32vw);
-        justify-self: end;
-      }
-    }
-
-    .hero-icon-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: var(--icon-radius);
-      box-shadow: var(--shadow-icon);
-    }
-
-    .hero-copy .eyebrow {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin: 0 0 20px;
-    }
-
-    @media (min-width: 1068px) {
-      .hero-copy .eyebrow {
-        font-size: 13px;
-        margin-bottom: 24px;
-      }
-    }
-
-    .hero-copy h1 {
-      margin: 0;
-      font-weight: 600;
-      line-height: 1.06;
-      letter-spacing: -0.045em;
-      font-size: clamp(32px, 8vw, 56px);
-    }
-
-    @media (min-width: 1068px) {
-      .hero-copy h1 {
-        font-size: clamp(44px, 4.2vw, 72px);
-        line-height: 1.02;
-      }
-    }
-
-    .hero-copy .headline-l2 {
-      display: block;
-      margin-top: 0.06em;
-    }
-
-    .hero-copy .lead {
-      margin: 28px 0 0;
-      font-size: clamp(16px, 4.2vw, 21px);
-      line-height: 1.55;
-      letter-spacing: -0.018em;
-      color: var(--text-secondary);
-      max-width: 36em;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    @media (min-width: 1068px) {
-      .hero-copy .lead {
-        margin-left: 0;
-        margin-right: 0;
-        margin-top: 32px;
-        font-size: 21px;
-        line-height: 1.5;
-      }
-    }
-
-    .hero-actions {
-      margin-top: 36px;
-      display: flex;
-      justify-content: center;
-    }
-
-    @media (min-width: 1068px) {
-      .hero-actions {
-        justify-content: flex-start;
-        margin-top: 40px;
-      }
-    }
-
-    .hero-actions .store-badge img {
-      height: 48px;
-      width: auto;
-      display: block;
-    }
-
-    @media (min-width: 1068px) {
-      .hero-actions .store-badge img {
-        height: 54px;
-      }
-    }
-
-    .pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px 12px;
-      margin-top: 36px;
-      max-width: 28rem;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    @media (min-width: 1068px) {
-      .pill-row {
-        justify-content: flex-start;
-        margin-left: 0;
-        margin-right: 0;
-        max-width: none;
-        margin-top: 40px;
-        gap: 12px 14px;
-      }
-    }
-
-    .pill {
-      font-size: 12px;
-      font-weight: 500;
-      padding: 9px 16px;
-      border-radius: 999px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--line);
-      color: var(--text-secondary);
-    }
-
-    @media (min-width: 1068px) {
-      .pill {
-        font-size: 13px;
-        padding: 10px 18px;
-      }
-    }
-
-    /* —— 章节：大留白 —— */
-    .section {
-      padding: 72px var(--pad-x);
-    }
-
-    @media (min-width: 734px) {
-      .section {
-        padding: 100px var(--pad-x);
-      }
-    }
-
-    @media (min-width: 1068px) {
-      .section {
-        padding: 140px max(40px, var(--pad-x));
-      }
-    }
-
-    .section.alt {
-      background: var(--bg-alt);
-    }
-
-    .section-inner {
-      max-width: var(--content-max);
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-tertiary);
-      margin: 0 0 20px;
-    }
-
-    @media (min-width: 1068px) {
-      .section-label {
-        margin-bottom: 24px;
-      }
-    }
-
-    .section h2 {
-      margin: 0 0 24px;
-      font-weight: 600;
-      line-height: 1.08;
-      letter-spacing: -0.038em;
-      font-size: clamp(28px, 6vw, 44px);
-      max-width: 15ch;
-    }
-
-    @media (min-width: 1068px) {
-      .section h2 {
-        font-size: clamp(40px, 3.2vw, 56px);
-        margin-bottom: 32px;
-        max-width: 18ch;
-      }
-    }
-
-    .section .lead {
-      margin: 0 0 40px;
-      font-size: clamp(17px, 2.8vw, 21px);
-      line-height: 1.55;
-      letter-spacing: -0.02em;
-      color: var(--text-secondary);
-      max-width: var(--read-max);
-    }
-
-    @media (min-width: 1068px) {
-      .section .lead {
-        margin-bottom: 48px;
-        font-size: 22px;
-        line-height: 1.45;
-        max-width: 42rem;
-      }
-    }
-
-    .prose {
-      font-size: 17px;
-      line-height: 1.65;
-      color: var(--text-secondary);
-      max-width: var(--read-max);
-    }
-
-    @media (min-width: 1068px) {
-      .prose {
-        font-size: 19px;
-        line-height: 1.6;
-        max-width: 44rem;
-      }
-    }
-
-    .prose p {
-      margin: 0 0 1.35em;
-    }
-
-    .prose p:last-child {
-      margin-bottom: 0;
-    }
-
-    .prose strong {
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    .bullet-list {
-      margin: 32px 0 0;
-      padding: 0;
-      list-style: none;
-      max-width: var(--read-max);
-    }
-
-    @media (min-width: 1068px) {
-      .bullet-list {
-        margin-top: 40px;
-      }
-    }
-
-    .bullet-list li {
-      position: relative;
-      padding-left: 1.25em;
-      margin-bottom: 18px;
-      color: var(--text-secondary);
-      line-height: 1.55;
-      font-size: 17px;
-    }
-
-    @media (min-width: 1068px) {
-      .bullet-list li {
-        margin-bottom: 16px;
-        font-size: 18px;
-        line-height: 1.55;
-      }
-    }
-
-    .bullet-list li::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.58em;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-
-    .grid-2 {
-      display: grid;
-      gap: 20px;
-      margin-top: 48px;
-    }
-
-    @media (min-width: 1068px) {
-      .grid-2 {
-        gap: 32px;
-        margin-top: 56px;
-      }
-    }
-
-    @media (min-width: 800px) {
-      .grid-2 {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    .card {
-      background: var(--bg-elevated);
-      border-radius: var(--radius-xl);
-      padding: 28px 24px;
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow-soft);
-    }
-
-    @media (min-width: 1068px) {
-      .card {
-        padding: 44px 40px;
-      }
-    }
-
-    .card h3 {
-      margin: 0 0 14px;
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: -0.025em;
-      color: var(--text);
-    }
-
-    @media (min-width: 1068px) {
-      .card h3 {
-        font-size: 24px;
-        margin-bottom: 16px;
-      }
-    }
-
-    .card .card-lead {
-      margin: 0;
-      font-size: 16px;
-      color: var(--text-secondary);
-      line-height: 1.55;
-    }
-
-    @media (min-width: 1068px) {
-      .card .card-lead {
-        font-size: 17px;
-        line-height: 1.58;
-      }
-    }
-
-    .stripe-dark {
-      background: #000;
-      color: #f5f5f7;
-    }
-
-    .stripe-dark .section-label {
-      color: #86868b;
-    }
-
-    .stripe-dark .lead,
-    .stripe-dark .prose,
-    .stripe-dark .bullet-list li {
-      color: #a1a1a6;
-    }
-
-    .stripe-dark h2 {
-      color: #f5f5f7;
-    }
-
-    .stripe-dark .card {
-      background: #1d1d1f;
-      border-color: rgba(255, 255, 255, 0.08);
-    }
-
-    .stripe-dark .card h3 {
-      color: #f5f5f7;
-    }
-
-    .stripe-dark .card .card-lead {
-      color: #a1a1a6;
-    }
-
-    /* 会员表：桌面表格 / 手机卡片 */
-    .compare-wrap {
-      margin-top: 40px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    @media (min-width: 1068px) {
-      .compare-wrap {
-        margin-top: 48px;
-      }
-    }
-
-    .compare {
-      width: 100%;
-      min-width: 520px;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-
-    @media (min-width: 1068px) {
-      .compare {
-        font-size: 16px;
-      }
-    }
-
-    .compare th,
-    .compare td {
-      padding: 18px 20px;
-      text-align: left;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .compare th {
-      font-weight: 600;
-      color: var(--text);
-      font-size: 12px;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      color: var(--text-tertiary);
-    }
-
-    .compare td {
-      color: var(--text-secondary);
-    }
-
-    .compare-cards {
-      display: none;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 32px;
-    }
-
-    .compare-card {
-      background: var(--bg-elevated);
-      border: 1px solid var(--line);
-      border-radius: var(--radius-lg);
-      padding: 20px 20px 8px;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .compare-card .row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 12px;
-      padding: 14px 0;
-      border-top: 1px solid var(--line);
-      font-size: 15px;
-    }
-
-    .compare-card .row:first-child {
-      border-top: none;
-      padding-top: 0;
-    }
-
-    .compare-card .row span:first-child {
-      color: var(--text-secondary);
-      flex: 1;
-      line-height: 1.45;
-    }
-
-    .compare-card .row span:last-child {
-      font-weight: 600;
-      color: var(--text);
-      flex-shrink: 0;
-    }
-
-    .compare-card h4 {
-      margin: 0 0 4px;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--text-tertiary);
-    }
-
-    @media (max-width: 733px) {
-      .compare-wrap {
-        display: none;
-      }
-
-      .compare-cards {
-        display: flex;
-      }
-    }
-
-    .specs {
-      display: grid;
-      gap: 0;
-      margin-top: 40px;
-      max-width: 560px;
-      border-top: 1px solid var(--line);
-    }
-
-    @media (min-width: 1068px) {
-      .specs {
-        margin-top: 48px;
-        max-width: 640px;
-      }
-    }
-
-    .specs div {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 6px;
-      padding: 22px 0;
-      border-bottom: 1px solid var(--line);
-      font-size: 16px;
-    }
-
-    @media (min-width: 734px) {
-      .specs div {
-        grid-template-columns: 160px 1fr;
-        gap: 24px;
-        align-items: baseline;
-      }
-    }
-
-    .specs dt {
-      margin: 0;
-      font-weight: 600;
-      color: var(--text);
-      font-size: 14px;
-    }
-
-    @media (min-width: 734px) {
-      .specs dt {
-        font-size: 15px;
-      }
-    }
-
-    .specs dd {
-      margin: 0;
-      color: var(--text-secondary);
-      line-height: 1.55;
-    }
-
-    .download-block {
-      text-align: center;
-      padding: 88px var(--pad-x);
-    }
-
-    @media (min-width: 1068px) {
-      .download-block {
-        padding: 160px var(--pad-x);
-      }
-    }
-
-    .download-block h2 {
-      margin: 0 auto 16px;
-      max-width: none;
-      font-size: clamp(28px, 5vw, 48px);
-      font-weight: 600;
-      letter-spacing: -0.035em;
-    }
-
-    .download-block .sub {
-      color: var(--text-secondary);
-      font-size: 17px;
-      margin: 0 0 36px;
-      line-height: 1.5;
-    }
-
-    @media (min-width: 1068px) {
-      .download-block .sub {
-        font-size: 20px;
-        margin-bottom: 40px;
-      }
-    }
-
-    .store-note {
-      margin-top: 24px;
-      font-size: 13px;
-      color: var(--text-tertiary);
-      max-width: 480px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.55;
-    }
-
-    .biz {
-      padding: 72px var(--pad-x) 88px;
-      background: color-mix(in srgb, var(--bg) 90%, var(--accent-soft));
-    }
-
-    @media (min-width: 1068px) {
-      .biz {
-        padding: 120px var(--pad-x) 140px;
-      }
-    }
-
-    .biz-grid {
-      max-width: var(--content-max);
-      margin: 0 auto;
-      display: grid;
-      gap: 24px;
-    }
-
-    @media (min-width: 880px) {
-      .biz-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 32px;
-      }
-    }
-
-    .biz-card {
-      background: var(--bg-elevated);
-      border-radius: var(--radius-xl);
-      padding: 32px 28px;
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow-soft);
-    }
-
-    @media (min-width: 1068px) {
-      .biz-card {
-        padding: 48px 44px;
-      }
-    }
-
-    .biz-card h3 {
-      margin: 0 0 16px;
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: -0.028em;
-    }
-
-    @media (min-width: 1068px) {
-      .biz-card h3 {
-        font-size: 28px;
-        margin-bottom: 20px;
-      }
-    }
-
-    .biz-card p {
-      margin: 0 0 16px;
-      color: var(--text-secondary);
-      font-size: 17px;
-      line-height: 1.58;
-    }
-
-    @media (min-width: 1068px) {
-      .biz-card p {
-        font-size: 18px;
-      }
-    }
-
-    .email-link {
-      font-size: 17px;
-      font-weight: 500;
-      color: var(--accent);
-    }
-
-    @media (min-width: 1068px) {
-      .email-link {
-        font-size: 19px;
-      }
-    }
-
-    .inline-link {
-      color: var(--accent);
-      font-weight: 500;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    footer {
-      padding: 48px var(--pad-x) max(40px, env(safe-area-inset-bottom));
-      border-top: 1px solid var(--line);
-      font-size: 12px;
-      color: var(--text-tertiary);
-    }
-
-    @media (min-width: 1068px) {
-      footer {
-        padding: 56px var(--pad-x) 64px;
-      }
-    }
-
-    .footer-inner {
-      max-width: var(--content-max);
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 20px;
-    }
-
-    @media (min-width: 734px) {
-      .footer-inner {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-        gap: 24px;
-      }
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 22px;
-    }
-
-    .footer-links a {
-      color: var(--text-secondary);
-    }
-
-    .footer-links a:hover {
-      color: var(--text);
-      opacity: 1;
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.85s var(--ease-out), transform 0.85s var(--ease-out);
-    }
-
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .tag {
-      display: inline-block;
-      margin-top: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--accent);
-      background: var(--accent-soft);
-      padding: 5px 12px;
-      border-radius: 999px;
-    }
-
-    .stripe-dark .compare th,
-    .stripe-dark .compare td {
-      border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .stripe-dark .compare-card {
-      background: #1d1d1f;
-      border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .stripe-dark .compare-card .row {
-      border-color: rgba(255, 255, 255, 0.08);
-    }
-
-    .stripe-dark .compare-card h4 {
-      color: #86868b;
-    }
-
-    .stripe-dark .compare-card .row span:first-child {
-      color: #a1a1a6;
-    }
-
-    .stripe-dark .compare-card .row span:last-child {
-      color: #f5f5f7;
-    }
-
-    .section .lead.spaced-top {
-      margin-top: 48px;
-    }
-
-    @media (min-width: 1068px) {
-      .section .lead.spaced-top {
-        margin-top: 56px;
-      }
-    }
+:root {
+  --bg: #fff;
+  --bg-soft: #f5f5f7;
+  --bg-elevated: #fff;
+  --text: #1d1d1f;
+  --text-dim: #6e6e73;
+  --text-faint: #86868b;
+  --line: rgba(0,0,0,.08);
+  --accent: #ff6452;
+  --accent-soft: rgba(255,100,82,.12);
+  --nav-primary-h: 48px;
+  --nav-local-h: 44px;
+  --header-h: calc(var(--nav-primary-h) + var(--nav-local-h));
+  --ease: cubic-bezier(.16,1,.3,1);
+  --radius-card: 28px;
+  --icon-r: 22.37%;
+  --pad-x: max(22px, env(safe-area-inset-left));
+  --pad-x-r: max(22px, env(safe-area-inset-right));
+  --copy-max: 680px;
+  --layout-max: min(1200px, 100% - var(--pad-x) - var(--pad-x-r));
+}
+@media (min-width: 1068px) {
+  :root { --nav-primary-h: 52px; --nav-local-h: 48px; }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #000; --bg-soft: #141414; --bg-elevated: #1d1d1f;
+    --text: #f5f5f7; --text-dim: #a1a1a6; --text-faint: #6e6e73;
+    --line: rgba(255,255,255,.12);
+    --accent-soft: rgba(255,100,82,.22);
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1!important;transform:none!important;transition:none!important}}
+body{
+  margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  font-size:17px;line-height:1.47059;letter-spacing:-.022em;color:var(--text);background:var(--bg);
+  -webkit-font-smoothing:antialiased;font-feature-settings:"kern" 1;
+}
+@media (min-width:1068px){body{font-size:18px;line-height:1.5}}
+body.nav-open{overflow:hidden;touch-action:none}
+a{color:inherit;text-decoration:none}
+a:hover{opacity:.86}
+[id]{scroll-margin-top:calc(var(--header-h) + 16px)}
+
+/* —— Apple 式双层顶栏 —— */
+.site-header{
+  position:fixed;top:0;left:0;right:0;z-index:1100;
+  background:rgba(255,255,255,.72);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s var(--ease),box-shadow .3s var(--ease);
+}
+@media (prefers-color-scheme:dark){
+  .site-header{background:rgba(0,0,0,.72)}
+}
+.site-header.is-scrolled{border-bottom-color:var(--line);box-shadow:0 1px 0 rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06)}
+@supports not (backdrop-filter:blur(20px)){.site-header{background:var(--bg)}}
+.nav-primary{
+  max-width:1440px;margin:0 auto;height:var(--nav-primary-h);
+  padding:0 var(--pad-x-r) 0 var(--pad-x);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.nav-brand{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:600;letter-spacing:-.03em;flex-shrink:0}
+.nav-brand img{width:28px;height:28px;border-radius:var(--icon-r);box-shadow:0 2px 10px rgba(0,0,0,.12)}
+@media (min-width:1068px){.nav-brand img{width:32px;height:32px}}
+.nav-brand span{font-weight:500;color:var(--text-dim);font-size:.88em}
+.nav-desktop{display:none;align-items:center;gap:26px}
+@media (min-width:1068px){.nav-desktop{display:flex}}
+.nav-desktop a{font-size:12px;font-weight:400;color:var(--text-dim);white-space:nowrap}
+.nav-desktop a:hover{color:var(--text);opacity:1}
+.nav-cta{font-size:12px;font-weight:500;padding:7px 16px;border-radius:999px;background:var(--accent);color:#fff!important}
+.nav-menu-btn{
+  display:grid;place-items:center;width:44px;height:44px;margin-right:-8px;border:none;border-radius:12px;
+  background:transparent;color:var(--text);cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+@media (min-width:1068px){.nav-menu-btn{display:none}}
+.nav-menu-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.nav-menu-icon{position:relative;width:18px;height:1.5px;background:currentColor;border-radius:1px}
+.nav-menu-icon::before,.nav-menu-icon::after{content:"";position:absolute;left:0;width:18px;height:1.5px;background:currentColor;border-radius:1px;transition:transform .3s var(--ease),top .3s var(--ease)}
+.nav-menu-icon::before{top:-6px}.nav-menu-icon::after{top:6px}
+.nav-open .nav-menu-icon{background:transparent}
+.nav-open .nav-menu-icon::before{top:0;transform:rotate(45deg)}
+.nav-open .nav-menu-icon::after{top:0;transform:rotate(-45deg)}
+.nav-backdrop{display:none;position:fixed;inset:0;top:var(--header-h);background:rgba(0,0,0,.38);z-index:1098;opacity:0;transition:opacity .35s var(--ease)}
+@media (max-width:1067px){.nav-open .nav-backdrop{display:block;opacity:1}}
+.nav-drawer{
+  position:fixed;top:var(--header-h);right:0;bottom:0;width:min(100%,400px);
+  background:var(--bg-elevated);z-index:1099;padding:20px var(--pad-x) max(28px,env(safe-area-inset-bottom));
+  transform:translateX(100%);transition:transform .4s var(--ease);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  box-shadow:-12px 0 48px rgba(0,0,0,.12);border-left:1px solid var(--line);
+}
+@media (min-width:1068px){.nav-drawer{display:none!important}}
+.nav-open .nav-drawer{transform:translateX(0)}
+.nav-drawer a{display:block;font-size:20px;font-weight:500;padding:15px 4px;border-bottom:1px solid var(--line);color:var(--text)}
+.nav-drawer .drawer-sub{margin:12px 0 6px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint)}
+.nav-drawer .drawer-cta{margin-top:24px;text-align:center;padding:14px 18px;border-radius:14px;background:var(--accent);color:#fff!important;border-bottom:none!important;font-size:17px}
+
+/* 章节条：类似 apple.com 产品页本地导航 */
+.nav-local-wrap{border-top:1px solid var(--line)}
+.nav-local{
+  max-width:1440px;margin:0 auto;height:var(--nav-local-h);
+  padding:0 var(--pad-x-r) 0 var(--pad-x);
+  display:flex;align-items:center;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.nav-local::-webkit-scrollbar{display:none}
+.nav-local a{
+  flex-shrink:0;padding:0 14px;height:100%;display:flex;align-items:center;
+  font-size:12px;font-weight:400;color:var(--text-dim);position:relative;
+}
+.nav-local a:hover{color:var(--text);opacity:1}
+.nav-local a::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:0;height:2px;border-radius:2px;
+  background:var(--accent);opacity:0;transform:scaleX(.6);transition:opacity .2s,transform .25s var(--ease);
+}
+.nav-local a:focus-visible::after,.nav-local a:hover::after{opacity:1;transform:scaleX(1)}
+
+main{padding-top:var(--header-h)}
+
+/* Hero：全屏感 + 产品名小字 */
+.hero{position:relative;min-height:calc(100svh - var(--header-h));display:flex;flex-direction:column;justify-content:center;padding:48px var(--pad-x) 72px}
+@media (min-width:1068px){.hero{min-height:calc(88svh - var(--header-h));padding:64px var(--pad-x) 96px}}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(90% 55% at 50% 0%,rgba(255,100,82,.08) 0%,transparent 52%),radial-gradient(55% 40% at 100% 25%,rgba(100,140,255,.07) 0%,transparent 42%),var(--bg);z-index:0}
+.hero-inner{position:relative;z-index:1;max-width:1280px;margin:0 auto;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:40px}
+@media (min-width:1068px){.hero-inner{display:grid;grid-template-columns:1.05fr .95fr;gap:72px 88px;align-items:center;text-align:left}}
+@media (min-width:1068px){.hero-copy{order:1}.hero-icon-wrap{order:2}}
+.hero-kicker{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
+@media (min-width:1068px){.hero-kicker{margin-bottom:20px}}
+.display-hero{
+  margin:0;font-weight:600;line-height:1.02;letter-spacing:-.045em;
+  font-size:clamp(36px,9vw,56px);max-width:12ch;
+}
+@media (min-width:1068px){.display-hero{font-size:clamp(48px,4.8vw,80px);max-width:14ch}}
+.hero-line2{display:block;margin-top:.08em}
+.intro-hero{
+  margin:24px 0 0;font-size:clamp(17px,3.8vw,21px);line-height:1.55;letter-spacing:-.018em;color:var(--text-dim);max-width:36em;margin-left:auto;margin-right:auto;
+}
+@media (min-width:1068px){.intro-hero{margin-top:28px;font-size:22px;line-height:1.45;margin-left:0;margin-right:0;max-width:28rem}}
+.hero-icon-wrap{width:min(200px,54vw);aspect-ratio:1;flex-shrink:0}
+@media (min-width:734px) and (max-width:1067px){.hero-icon-wrap{width:min(220px,44vw)}}
+@media (min-width:1068px){.hero-icon-wrap{width:min(300px,30vw);justify-self:end}}
+.hero-icon-wrap img{width:100%;height:100%;object-fit:cover;border-radius:var(--icon-r);box-shadow:0 28px 64px rgba(255,100,82,.2),0 12px 32px rgba(0,0,0,.1)}
+.hero-cta-row{margin-top:32px;display:flex;justify-content:center}
+@media (min-width:1068px){.hero-cta-row{margin-top:40px;justify-content:flex-start}}
+.hero-cta-row img{height:48px;width:auto}
+@media (min-width:1068px){.hero-cta-row img{height:54px}}
+.pill-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 12px;margin-top:32px;max-width:32rem;margin-left:auto;margin-right:auto}
+@media (min-width:1068px){.pill-row{justify-content:flex-start;margin-left:0;margin-right:0;max-width:none;margin-top:36px}}
+.pill{font-size:12px;font-weight:500;padding:9px 16px;border-radius:999px;background:var(--bg-soft);border:1px solid var(--line);color:var(--text-dim)}
+@media (min-width:1068px){.pill{font-size:13px;padding:10px 18px}}
+
+/* 数据带：类似 Apple 规格条 */
+.stats-ribbon{background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stats-inner{max-width:1200px;margin:0 auto;padding:48px var(--pad-x);display:grid;grid-template-columns:1fr;gap:32px;text-align:center}
+@media (min-width:734px){.stats-inner{grid-template-columns:repeat(3,1fr);gap:24px;padding:56px var(--pad-x)}}
+.stat-value{display:block;font-size:clamp(40px,8vw,56px);font-weight:600;letter-spacing:-.04em;line-height:1;color:var(--text);margin-bottom:8px}
+.stat-caption{font-size:14px;line-height:1.45;color:var(--text-dim);max-width:12rem;margin:0 auto}
+@media (min-width:1068px){.stat-caption{font-size:15px}}
+
+/* 章节：超大标题 + 窄导语（iPhone 产品页节奏） */
+.pf{padding:72px var(--pad-x)}
+@media (min-width:734px){.pf{padding:100px var(--pad-x)}}
+@media (min-width:1068px){.pf{padding:120px max(48px,var(--pad-x)) 140px}}
+.pf.alt{background:var(--bg-soft)}
+.pf-inner{max-width:var(--layout-max);margin:0 auto}
+.pf-kicker{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-faint);margin:0 0 20px}
+@media (min-width:1068px){.pf-kicker{margin-bottom:24px}}
+.display{
+  margin:0 0 24px;font-weight:600;line-height:1.05;letter-spacing:-.045em;
+  font-size:clamp(32px,6.5vw,48px);max-width:16ch;
+}
+@media (min-width:1068px){.display{font-size:clamp(44px,3.6vw,64px);margin-bottom:32px;max-width:18ch}}
+.intro{margin:0 0 36px;font-size:clamp(18px,2.6vw,21px);line-height:1.5;letter-spacing:-.02em;color:var(--text-dim);max-width:var(--copy-max)}
+@media (min-width:1068px){.intro{margin-bottom:44px;font-size:24px;line-height:1.42;max-width:36rem}}
+.prose{font-size:17px;line-height:1.65;color:var(--text-dim);max-width:var(--copy-max)}
+@media (min-width:1068px){.prose{font-size:19px;line-height:1.58;max-width:38rem}}
+.prose p{margin:0 0 1.25em}.prose p:last-child{margin-bottom:0}.prose strong{color:var(--text);font-weight:600}
+.bullet-list{margin:32px 0 0;padding:0;list-style:none;max-width:var(--copy-max)}
+@media (min-width:1068px){.bullet-list{margin-top:40px;max-width:38rem}}
+.bullet-list li{position:relative;padding-left:1.2em;margin-bottom:16px;color:var(--text-dim);line-height:1.55;font-size:17px}
+@media (min-width:1068px){.bullet-list li{font-size:18px}}
+.bullet-list li::before{content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.grid-2{display:grid;gap:20px;margin-top:40px}
+@media (min-width:800px){.grid-2{grid-template-columns:1fr 1fr;gap:28px;margin-top:48px}}
+@media (min-width:1068px){.grid-2{gap:32px;margin-top:56px}}
+.card{background:var(--bg-elevated);border-radius:var(--radius-card);padding:28px 24px;border:1px solid var(--line);box-shadow:0 2px 20px rgba(0,0,0,.04)}
+@media (min-width:1068px){.card{padding:44px 40px}}
+.card h3{margin:0 0 12px;font-size:20px;font-weight:600;letter-spacing:-.025em}
+@media (min-width:1068px){.card h3{font-size:24px;margin-bottom:14px}}
+.card-lead{margin:0;font-size:16px;line-height:1.55;color:var(--text-dim)}
+@media (min-width:1068px){.card-lead{font-size:17px}}
+.tag{display:inline-block;margin-top:18px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:5px 12px;border-radius:999px}
+.intro-spaced{margin-top:40px!important}
+@media (min-width:1068px){.intro-spaced{margin-top:48px!important}}
+
+/* 全宽深色带 */
+.ridge-dark{
+  background:#000;color:#f5f5f7;
+  width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);
+  padding:72px var(--pad-x) 88px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+@media (min-width:1068px){.ridge-dark{padding:120px max(48px,var(--pad-x)) 140px}}
+.ridge-inner{max-width:var(--layout-max);margin:0 auto}
+.ridge-dark .pf-kicker{color:#86868b}
+.ridge-dark .display{color:#f5f5f7}
+.ridge-dark .intro,.ridge-dark .bullet-list li,.ridge-dark .card-lead{color:#a1a1a6}
+.ridge-dark .card{background:#1d1d1f;border-color:rgba(255,255,255,.1)}
+.ridge-dark .card h3{color:#f5f5f7}
+
+.compare-wrap{margin-top:40px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media (min-width:1068px){.compare-wrap{margin-top:48px}}
+.compare{width:100%;min-width:520px;border-collapse:collapse;font-size:15px}
+@media (min-width:1068px){.compare{font-size:16px}}
+.compare th,.compare td{padding:18px 20px;text-align:left;border-bottom:1px solid var(--line)}
+.compare th{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint)}
+.compare td{color:var(--text-dim)}
+.compare-cards{display:none;flex-direction:column;gap:16px;margin-top:32px}
+.compare-card{background:var(--bg-elevated);border:1px solid var(--line);border-radius:var(--radius-card);padding:18px 18px 8px;box-shadow:0 2px 16px rgba(0,0,0,.04)}
+.compare-card h4{margin:0 0 6px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint)}
+.compare-card .row{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-top:1px solid var(--line);font-size:15px}
+.compare-card .row:first-child{border-top:none;padding-top:0}
+.compare-card .row span:first-child{color:var(--text-dim);flex:1;line-height:1.45}
+.compare-card .row span:last-child{font-weight:600;color:var(--text);flex-shrink:0}
+@media (max-width:733px){.compare-wrap{display:none}.compare-cards{display:flex}}
+.ridge-dark .compare th,.ridge-dark .compare td{border-color:rgba(255,255,255,.1)}
+.ridge-dark .compare-card{background:#1d1d1f;border-color:rgba(255,255,255,.1)}
+.ridge-dark .compare-card .row{border-color:rgba(255,255,255,.08)}
+.ridge-dark .compare-card h4{color:#86868b}
+.ridge-dark .compare-card .row span:first-child{color:#a1a1a6}
+.ridge-dark .compare-card .row span:last-child{color:#f5f5f7}
+
+.specs{margin-top:40px;max-width:560px;border-top:1px solid var(--line)}
+@media (min-width:1068px){.specs{margin-top:48px;max-width:640px}}
+.specs div{display:grid;grid-template-columns:1fr;gap:6px;padding:22px 0;border-bottom:1px solid var(--line);font-size:16px}
+@media (min-width:734px){.specs div{grid-template-columns:150px 1fr;gap:20px;align-items:baseline}}
+.specs dt{margin:0;font-weight:600;color:var(--text);font-size:14px}
+@media (min-width:734px){.specs dt{font-size:15px}}
+.specs dd{margin:0;color:var(--text-dim);line-height:1.55}
+
+.download{text-align:center;padding:88px var(--pad-x)}
+@media (min-width:1068px){.download{padding:140px var(--pad-x) 160px}}
+.download .display{max-width:none;margin:0 auto 16px}
+.download .sub{color:var(--text-dim);font-size:17px;margin:0 0 32px;line-height:1.5}
+@media (min-width:1068px){.download .sub{font-size:20px;margin-bottom:36px}}
+.store-note{margin-top:22px;font-size:13px;color:var(--text-faint);max-width:480px;margin-left:auto;margin-right:auto;line-height:1.55}
+
+.biz{padding:72px var(--pad-x) 88px;background:linear-gradient(180deg,var(--bg-soft) 0%,var(--bg) 100%)}
+@media (min-width:1068px){.biz{padding:120px var(--pad-x) 140px}}
+.biz-grid{max-width:var(--layout-max);margin:0 auto;display:grid;gap:24px}
+@media (min-width:880px){.biz-grid{grid-template-columns:1fr 1fr;gap:32px}}
+.biz-card{background:var(--bg-elevated);border-radius:var(--radius-card);padding:32px 28px;border:1px solid var(--line);box-shadow:0 2px 20px rgba(0,0,0,.04)}
+@media (min-width:1068px){.biz-card{padding:48px 44px}}
+.biz-card h3{margin:0 0 14px;font-size:24px;font-weight:600;letter-spacing:-.028em}
+@media (min-width:1068px){.biz-card h3{font-size:28px;margin-bottom:18px}}
+.biz-card p{margin:0 0 14px;color:var(--text-dim);font-size:17px;line-height:1.55}
+@media (min-width:1068px){.biz-card p{font-size:18px}}
+.email-link{font-size:17px;font-weight:500;color:var(--accent)}
+@media (min-width:1068px){.email-link{font-size:19px}}
+.inline-link{color:var(--accent);font-weight:500;text-decoration:underline;text-underline-offset:3px}
+
+footer{padding:48px var(--pad-x) max(40px,env(safe-area-inset-bottom));border-top:1px solid var(--line);font-size:12px;color:var(--text-faint)}
+@media (min-width:1068px){footer{padding:56px var(--pad-x) 64px}}
+.footer-inner{max-width:var(--layout-max);margin:0 auto;display:flex;flex-direction:column;align-items:flex-start;gap:20px}
+@media (min-width:734px){.footer-inner{flex-direction:row;flex-wrap:wrap;justify-content:space-between;align-items:center}}
+.footer-links{display:flex;flex-wrap:wrap;gap:22px}
+.footer-links a{color:var(--text-dim)}.footer-links a:hover{color:var(--text);opacity:1}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+.reveal.is-visible{opacity:1;transform:translateY(0)}
   </style>
 </head>
 <body>
-  <div class="nav-wrap" id="nav">
-    <nav class="nav" aria-label="主导航">
+  <header class="site-header" id="siteHeader">
+    <div class="nav-primary">
       <a href="home.html" class="nav-brand">
         <img src="app-icon.png" width="32" height="32" alt="" decoding="async" />
         Kitchen <span>厨房</span>
       </a>
-      <div class="nav-desktop" aria-label="章节">
+      <div class="nav-desktop" aria-label="站点">
+        <a href="support.html">支持</a>
+        <a class="nav-cta" href="#download">获取 App</a>
+      </div>
+      <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-expanded="false" aria-controls="navDrawer" aria-label="打开菜单">
+        <span class="nav-menu-icon" aria-hidden="true"></span>
+      </button>
+    </div>
+    <div class="nav-local-wrap">
+      <nav class="nav-local" aria-label="本页章节">
         <a href="#overview">概览</a>
         <a href="#recipes">菜谱</a>
         <a href="#fridge">冰箱</a>
@@ -1223,28 +308,28 @@
         <a href="#system">系统</a>
         <a href="#membership">会员</a>
         <a href="#privacy">隐私</a>
-        <a href="support.html">支持</a>
-        <a class="nav-cta" href="#download">获取 App</a>
-      </div>
-      <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-expanded="false" aria-controls="navDrawer" aria-label="打开菜单">
-        <span class="nav-menu-icon" aria-hidden="true"></span>
-      </button>
-    </nav>
+        <a href="#specs">规格</a>
+        <a href="#download">下载</a>
+      </nav>
+    </div>
     <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
-    <aside class="nav-drawer" id="navDrawer" aria-hidden="true" aria-label="移动端导航">
-      <p class="drawer-sub">浏览</p>
+    <aside class="nav-drawer" id="navDrawer" aria-hidden="true" aria-label="菜单">
+      <p class="drawer-sub">本页</p>
       <a href="#overview">概览</a>
       <a href="#recipes">菜谱</a>
       <a href="#fridge">冰箱</a>
       <a href="#ai">AI</a>
-      <a href="#system">与系统协作</a>
+      <a href="#system">系统</a>
       <a href="#membership">会员</a>
       <a href="#privacy">隐私</a>
       <a href="#specs">规格</a>
+      <a href="#download">下载</a>
+      <p class="drawer-sub">站点</p>
       <a href="support.html">支持</a>
+      <a href="index.html">隐私政策</a>
       <a class="drawer-cta" id="drawerCta" href="#download">获取 App</a>
     </aside>
-  </div>
+  </header>
 
   <main>
     <header class="hero">
@@ -1254,16 +339,13 @@
           <img src="app-icon.png" width="512" height="512" alt="Kitchen 厨房 App 图标" />
         </div>
         <div class="hero-copy">
-          <p class="eyebrow">Kitchen 厨房</p>
-          <h1>
-            <span class="headline-l1">菜谱、冰箱与智能帮手，</span>
-            <span class="headline-l2">都在这一个 App 里。</span>
-          </h1>
-          <p class="lead">
+          <p class="hero-kicker">App · iPhone &amp; iPad</p>
+          <h1 class="display-hero">菜谱、冰箱与智能帮手，<span class="hero-line2">都在这一个 App 里。</span></h1>
+          <p class="intro-hero">
             为日常做饭做的本地优先工作台：建立自己的菜谱库、看清冰箱里有什么、何时过期；需要时再用 AI 加速录入与灵感。无需注册账号即可上手，数据默认只保存在你的设备上；可选开启 iCloud 与家庭成员共享一台「家庭冰箱」。
           </p>
-          <div class="hero-actions">
-            <a class="store-badge" id="storeLink" href="#" aria-label="在 App Store 下载 Kitchen 厨房">
+          <div class="hero-cta-row">
+            <a id="storeLink" href="#" aria-label="在 App Store 下载 Kitchen 厨房">
               <picture>
                 <source media="(prefers-color-scheme: dark)" srcset="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/white/zh-cn?size=250x83" />
                 <img src="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/black/zh-cn?size=250x83" alt="App Store 下载" width="180" height="60" loading="eager" />
@@ -1280,11 +362,19 @@
       </div>
     </header>
 
-    <section class="section alt" id="overview">
-      <div class="section-inner">
-        <p class="section-label reveal">概览</p>
-        <h2 class="reveal">从「今晚吃什么」到「这盒牛奶哪天过期」，少在几个 App 之间来回切。</h2>
-        <p class="lead reveal">
+    <section class="stats-ribbon reveal">
+      <div class="stats-inner">
+        <div class="stat"><span class="stat-value">4</span><span class="stat-caption">种方式把菜谱放进你的资料库</span></div>
+        <div class="stat"><span class="stat-value">30</span><span class="stat-caption">天回收站，误删也能找回</span></div>
+        <div class="stat"><span class="stat-value">0</span><span class="stat-caption">强制注册的云端账号</span></div>
+      </div>
+    </section>
+
+    <section class="pf alt" id="overview">
+      <div class="pf-inner">
+        <p class="pf-kicker reveal">概览</p>
+        <h2 class="display reveal">从「今晚吃什么」到「牛奶哪天过期」，少在几个 App 之间来回切。</h2>
+        <p class="intro reveal">
           Kitchen 把<strong>个人菜谱库</strong>、<strong>家庭冰箱库存</strong>与<strong>可选 AI 工具</strong>放在同一套导航里：不依赖自建后端，也不强制你登录第三方账号。你可以完全离线地维护菜谱与食材；在愿意承担网络请求时，再使用拍照识谱、根据库存推荐一道菜等能力。
         </p>
         <div class="prose reveal">
@@ -1298,11 +388,11 @@
       </div>
     </section>
 
-    <section class="section" id="recipes">
-      <div class="section-inner">
-        <p class="section-label reveal">菜谱</p>
-        <h2 class="reveal">一道菜，从想法到可照做的步骤。</h2>
-        <p class="lead reveal">四种录入方式，照顾不同场景：手写整理、拍下锅里的成品、从相册挑一张旧图，或只输入菜名让 AI 生成一版可编辑草稿。</p>
+    <section class="pf" id="recipes">
+      <div class="pf-inner">
+        <p class="pf-kicker reveal">菜谱</p>
+        <h2 class="display reveal">一道菜，从想法到可照做的步骤。</h2>
+        <p class="intro reveal">四种录入方式，照顾不同场景：手写整理、拍下锅里的成品、从相册挑一张旧图，或只输入菜名让 AI 生成一版可编辑草稿。</p>
         <ul class="bullet-list reveal">
           <li><strong>手动录入</strong>：食材、调料、步骤、备注完整可控，步骤可逐条配图。</li>
           <li><strong>拍照 / 相册</strong>：把纸质菜谱或社交平台上看到的成品图交给识别流程，减少打字。</li>
@@ -1313,11 +403,11 @@
       </div>
     </section>
 
-    <section class="section alt" id="fridge">
-      <div class="section-inner">
-        <p class="section-label reveal">冰箱</p>
-        <h2 class="reveal">库存、临期与采购，一眼有数。</h2>
-        <p class="lead reveal">按食材与调料分类管理数量；时间信息既支持直接填到期日，也支持「生产日期 + 保质期」推算，方便牛奶、酱料等不同包装习惯。</p>
+    <section class="pf alt" id="fridge">
+      <div class="pf-inner">
+        <p class="pf-kicker reveal">冰箱</p>
+        <h2 class="display reveal">库存、临期与采购，一眼有数。</h2>
+        <p class="intro reveal">按食材与调料分类管理数量；时间信息既支持直接填到期日，也支持「生产日期 + 保质期」推算，方便牛奶、酱料等不同包装习惯。</p>
         <div class="grid-2">
           <article class="card reveal">
             <h3>状态与提醒</h3>
@@ -1330,17 +420,17 @@
             <span class="tag">家庭</span>
           </article>
         </div>
-        <p class="lead reveal spaced-top">
+        <p class="intro intro-spaced reveal">
           与 CloudKit 结合后，你可以邀请家人共同维护<strong>共享冰箱</strong>（会员）：谁买了菜、谁更新了数量，都能在同一视图里对齐，减少群里反复问「家里还有酱油吗」。
         </p>
       </div>
     </section>
 
-    <section class="section" id="ai">
-      <div class="section-inner">
-        <p class="section-label reveal">AI</p>
-        <h2 class="reveal">只在你说「现在处理」时，才把内容交给模型。</h2>
-        <p class="lead reveal">Kitchen 的 AI 能力由 DeepSeek 提供支持；设计上强调<strong>显式触发</strong>与<strong>最小必要传输</strong>：不会在后台默默上传你的全部数据。</p>
+    <section class="pf" id="ai">
+      <div class="pf-inner">
+        <p class="pf-kicker reveal">AI</p>
+        <h2 class="display reveal">只在你说「现在处理」时，才把内容交给模型。</h2>
+        <p class="intro reveal">Kitchen 的 AI 能力由 DeepSeek 提供支持；设计上强调<strong>显式触发</strong>与<strong>最小必要传输</strong>：不会在后台默默上传你的全部数据。</p>
         <ul class="bullet-list reveal">
           <li>识别菜谱照片，提取食材、步骤与份量结构。</li>
           <li>解析食材或调料照片，辅助写入冰箱条目。</li>
@@ -1349,17 +439,17 @@
           <li>结合当前冰箱库存，推荐「今晚可以做的一道菜」。</li>
           <li>对已写好的菜谱步骤做语气或详略上的改写（会员）。</li>
         </ul>
-        <p class="prose reveal" style="margin-top: 40px">
+        <p class="prose reveal" style="margin-top:40px">
           上述能力均在<strong>会员</strong>范围内；使用前需在 App 内配置可用的 AI 访问方式。若你关心数据边界，请阅读我们的<a class="inline-link" href="index.html">隐私政策</a>，其中说明了默认本机存储、可选 iCloud、以及 AI 请求的发送范围。
         </p>
       </div>
     </section>
 
-    <section class="section stripe-dark" id="system">
-      <div class="section-inner">
-        <p class="section-label reveal">与系统深度协作</p>
-        <h2 class="reveal">不只是独立 App，也融入你已有的 Apple 习惯。</h2>
-        <div class="grid-2" style="margin-top: 8px">
+    <section class="ridge-dark" id="system">
+      <div class="ridge-inner">
+        <p class="pf-kicker reveal">与系统深度协作</p>
+        <h2 class="display reveal">不只是独立 App，也融入你已有的 Apple 习惯。</h2>
+        <div class="grid-2" style="margin-top:8px">
           <article class="card reveal">
             <h3>Siri 与快捷指令</h3>
             <p class="card-lead">通过系统快捷入口触发添加食材、查询库存、朗读清单、推荐菜品等动作；支持多轮 Siri 对话，例如在「我买了点东西想加到冰箱里」后，由 Siri 追问细节并在 App 内弹出确认面板。</p>
@@ -1384,76 +474,39 @@
       </div>
     </section>
 
-    <section class="section" id="membership">
-      <div class="section-inner">
-        <p class="section-label reveal">会员</p>
-        <h2 class="reveal">基础免费用，进阶按订阅或买断解锁。</h2>
-        <p class="lead reveal">订阅与价格由 App Store 展示与扣款；你可以在设置中管理会员状态。以下为能力划分概要，具体以 App 内说明为准。</p>
-
+    <section class="pf alt" id="membership">
+      <div class="pf-inner">
+        <p class="pf-kicker reveal">会员</p>
+        <h2 class="display reveal">基础免费用，进阶按订阅或买断解锁。</h2>
+        <p class="intro reveal">订阅与价格由 App Store 展示与扣款；你可以在设置中管理会员状态。以下为能力划分概要，具体以 App 内说明为准。</p>
         <div class="compare-wrap reveal">
           <table class="compare">
-            <thead>
-              <tr>
-                <th>能力</th>
-                <th>免费</th>
-                <th>会员</th>
-              </tr>
-            </thead>
+            <thead><tr><th>能力</th><th>免费</th><th>会员</th></tr></thead>
             <tbody>
-              <tr>
-                <td>本地菜谱库（录入、筛选、收藏、随机、分享等）</td>
-                <td>✓</td>
-                <td>✓</td>
-              </tr>
-              <tr>
-                <td>本地冰箱、搜索、回收站、备份与导入</td>
-                <td>✓</td>
-                <td>✓</td>
-              </tr>
-              <tr>
-                <td>AI 识图、生成、推荐、语音拆条、步骤改写</td>
-                <td>—</td>
-                <td>✓</td>
-              </tr>
-              <tr>
-                <td>iCloud 同步、共享冰箱、完整快捷指令能力</td>
-                <td>—</td>
-                <td>✓</td>
-              </tr>
+              <tr><td>本地菜谱库（录入、筛选、收藏、随机、分享等）</td><td>✓</td><td>✓</td></tr>
+              <tr><td>本地冰箱、搜索、回收站、备份与导入</td><td>✓</td><td>✓</td></tr>
+              <tr><td>AI 识图、生成、推荐、语音拆条、步骤改写</td><td>—</td><td>✓</td></tr>
+              <tr><td>iCloud 同步、共享冰箱、完整快捷指令能力</td><td>—</td><td>✓</td></tr>
             </tbody>
           </table>
         </div>
-
         <div class="compare-cards reveal" aria-label="会员能力对照">
-          <div class="compare-card">
-            <h4>本地菜谱库</h4>
-            <div class="row"><span>录入、筛选、收藏、随机、分享等</span><span>免费 · 会员</span></div>
-          </div>
-          <div class="compare-card">
-            <h4>本地冰箱与工具</h4>
-            <div class="row"><span>搜索、回收站、备份与导入</span><span>免费 · 会员</span></div>
-          </div>
-          <div class="compare-card">
-            <h4>AI</h4>
-            <div class="row"><span>识图、生成、推荐、语音拆条、步骤改写</span><span>会员</span></div>
-          </div>
-          <div class="compare-card">
-            <h4>云与自动化</h4>
-            <div class="row"><span>iCloud、共享冰箱、完整快捷指令</span><span>会员</span></div>
-          </div>
+          <div class="compare-card"><h4>本地菜谱库</h4><div class="row"><span>录入、筛选、收藏、随机、分享等</span><span>免费 · 会员</span></div></div>
+          <div class="compare-card"><h4>本地冰箱与工具</h4><div class="row"><span>搜索、回收站、备份与导入</span><span>免费 · 会员</span></div></div>
+          <div class="compare-card"><h4>AI</h4><div class="row"><span>识图、生成、推荐、语音拆条、步骤改写</span><span>会员</span></div></div>
+          <div class="compare-card"><h4>云与自动化</h4><div class="row"><span>iCloud、共享冰箱、完整快捷指令</span><span>会员</span></div></div>
         </div>
-
-        <p class="prose reveal" style="margin-top: 40px">
+        <p class="prose reveal" style="margin-top:40px">
           订阅条款、自动续费与退款流程遵循 Apple 标准流程：可在「设置 → Apple ID → 订阅」中查看与取消。应用内亦提供与购买相关的法律链接（使用条款与隐私政策）。
         </p>
       </div>
     </section>
 
-    <section class="section alt" id="privacy">
-      <div class="section-inner">
-        <p class="section-label reveal">隐私与安全</p>
-        <h2 class="reveal">本地优先，不是一句口号。</h2>
-        <p class="lead reveal">
+    <section class="pf" id="privacy">
+      <div class="pf-inner">
+        <p class="pf-kicker reveal">隐私与安全</p>
+        <h2 class="display reveal">本地优先，不是一句口号。</h2>
+        <p class="intro reveal">
           Kitchen 不运营「登录我们服务器才能用」的账号体系：菜谱与冰箱的默认存储位置是你的设备。开启 iCloud 时，数据进入<strong>你自己的</strong> Apple ID 容器；AI 功能只在你主动发起相关操作时，通过 HTTPS 将<strong>当次</strong>需要处理的文字或图片发往第三方 AI 服务。
         </p>
         <div class="prose reveal">
@@ -1464,10 +517,10 @@
       </div>
     </section>
 
-    <section class="section" id="specs">
-      <div class="section-inner">
-        <p class="section-label reveal">规格</p>
-        <h2 class="reveal">在开始之前。</h2>
+    <section class="pf alt" id="specs">
+      <div class="pf-inner">
+        <p class="pf-kicker reveal">规格</p>
+        <h2 class="display reveal">在开始之前。</h2>
         <dl class="specs reveal">
           <div><dt>平台</dt><dd>iPhone、iPad（通用购买以 App Store 为准）</dd></div>
           <div><dt>系统</dt><dd>iOS / iPadOS 26.4 或更高版本</dd></div>
@@ -1478,18 +531,16 @@
       </div>
     </section>
 
-    <section class="download-block" id="download">
-      <h2 class="reveal">在 App Store 获取 Kitchen 厨房。</h2>
+    <section class="download" id="download">
+      <h2 class="display reveal">在 App Store 获取 Kitchen 厨房。</h2>
       <p class="sub reveal">上架信息与最低系统版本以商店页面为准。</p>
-      <a class="store-badge reveal" id="storeLinkFooter" href="#" aria-label="在 App Store 下载">
+      <a class="reveal" id="storeLinkFooter" href="#" aria-label="在 App Store 下载">
         <picture>
           <source media="(prefers-color-scheme: dark)" srcset="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/white/zh-cn?size=250x83" />
           <img src="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/black/zh-cn?size=250x83" alt="App Store" width="180" height="60" loading="lazy" />
         </picture>
       </a>
-      <p class="store-note reveal">
-        若尚未配置 App Store 数字 ID，请在页面顶部脚本中将 <code style="font-size: 12px">KITCHEN_APP_STORE_URL</code> 替换为正式商品链接。
-      </p>
+      <p class="store-note reveal">若尚未配置 App Store 数字 ID，请在页面顶部脚本中将 <code style="font-size:12px">KITCHEN_APP_STORE_URL</code> 替换为正式商品链接。</p>
     </section>
 
     <section class="biz" id="business">
@@ -1510,7 +561,7 @@
 
   <footer>
     <div class="footer-inner">
-      <p style="margin: 0">© 2026 Kitchen 厨房。保留所有权利。</p>
+      <p style="margin:0">© 2026 Kitchen 厨房。保留所有权利。</p>
       <div class="footer-links">
         <a href="index.html">隐私政策</a>
         <a href="support.html">支持</a>
@@ -1520,100 +571,47 @@
   </footer>
 
   <script>
-    (function () {
-      var nav = document.getElementById("nav");
-      var body = document.body;
-      var btn = document.getElementById("navMenuBtn");
-      var drawer = document.getElementById("navDrawer");
-      var backdrop = document.getElementById("navBackdrop");
+(function(){
+  var header=document.getElementById("siteHeader");
+  var body=document.body;
+  var btn=document.getElementById("navMenuBtn");
+  var drawer=document.getElementById("navDrawer");
+  var backdrop=document.getElementById("navBackdrop");
+  function setNavOpen(o){
+    body.classList.toggle("nav-open",o);
+    if(btn){btn.setAttribute("aria-expanded",o?"true":"false");btn.setAttribute("aria-label",o?"关闭菜单":"打开菜单");}
+    if(drawer)drawer.setAttribute("aria-hidden",o?"false":"true");
+    if(backdrop)backdrop.setAttribute("aria-hidden",o?"false":"true");
+  }
+  function closeNav(){setNavOpen(false);}
+  if(btn&&drawer){
+    btn.addEventListener("click",function(){setNavOpen(!body.classList.contains("nav-open"));});
+    drawer.querySelectorAll("a").forEach(function(a){a.addEventListener("click",closeNav);});
+  }
+  if(backdrop)backdrop.addEventListener("click",closeNav);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeNav();});
+  window.addEventListener("resize",function(){if(window.matchMedia("(min-width:1068px)").matches)closeNav();});
+  document.querySelectorAll(".nav-local a").forEach(function(a){a.addEventListener("click",closeNav);});
 
-      function setNavOpen(open) {
-        body.classList.toggle("nav-open", open);
-        if (btn) {
-          btn.setAttribute("aria-expanded", open ? "true" : "false");
-          btn.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单");
-        }
-        if (drawer) drawer.setAttribute("aria-hidden", open ? "false" : "true");
-        if (backdrop) backdrop.setAttribute("aria-hidden", open ? "false" : "true");
-      }
+  var url=window.KITCHEN_APP_STORE_URL||"";
+  var valid=url&&url.indexOf("REPLACE_ME")===-1;
+  function bindStoreLink(el){
+    if(!el)return;
+    if(valid){el.setAttribute("href",url);el.setAttribute("target","_blank");el.setAttribute("rel","noopener noreferrer");el.addEventListener("click",closeNav);}
+    else{el.setAttribute("href","#download");el.addEventListener("click",function(e){e.preventDefault();closeNav();document.getElementById("download").scrollIntoView({behavior:"smooth"});});}
+  }
+  bindStoreLink(document.getElementById("storeLink"));
+  bindStoreLink(document.getElementById("storeLinkFooter"));
+  bindStoreLink(document.getElementById("drawerCta"));
 
-      function closeNav() {
-        setNavOpen(false);
-      }
+  function onScroll(){header.classList.toggle("is-scrolled",window.scrollY>4);}
+  window.addEventListener("scroll",onScroll,{passive:true});onScroll();
 
-      if (btn && drawer) {
-        btn.addEventListener("click", function () {
-          setNavOpen(!body.classList.contains("nav-open"));
-        });
-        drawer.querySelectorAll("a").forEach(function (a) {
-          a.addEventListener("click", closeNav);
-        });
-      }
-
-      if (backdrop) {
-        backdrop.addEventListener("click", closeNav);
-      }
-
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape") closeNav();
-      });
-
-      window.addEventListener("resize", function () {
-        if (window.matchMedia("(min-width: 1068px)").matches) closeNav();
-      });
-
-      var url = window.KITCHEN_APP_STORE_URL || "";
-      var valid = url && url.indexOf("REPLACE_ME") === -1;
-
-      function bindStoreLink(el) {
-        if (!el) return;
-        if (valid) {
-          el.setAttribute("href", url);
-          el.setAttribute("target", "_blank");
-          el.setAttribute("rel", "noopener noreferrer");
-          el.addEventListener("click", closeNav);
-        } else {
-          el.setAttribute("href", "#download");
-          el.addEventListener("click", function (e) {
-            e.preventDefault();
-            closeNav();
-            document.getElementById("download").scrollIntoView({ behavior: "smooth" });
-          });
-        }
-      }
-
-      bindStoreLink(document.getElementById("storeLink"));
-      bindStoreLink(document.getElementById("storeLinkFooter"));
-      bindStoreLink(document.getElementById("drawerCta"));
-
-      function onScroll() {
-        nav.classList.toggle("is-scrolled", window.scrollY > 8);
-      }
-      window.addEventListener("scroll", onScroll, { passive: true });
-      onScroll();
-
-      var nodes = document.querySelectorAll(".reveal");
-      if (!("IntersectionObserver" in window)) {
-        nodes.forEach(function (n) {
-          n.classList.add("is-visible");
-        });
-        return;
-      }
-      var io = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (en) {
-            if (en.isIntersecting) {
-              en.target.classList.add("is-visible");
-              io.unobserve(en.target);
-            }
-          });
-        },
-        { rootMargin: "0px 0px -6% 0px", threshold: 0.05 }
-      );
-      nodes.forEach(function (n) {
-        io.observe(n);
-      });
-    })();
+  var nodes=document.querySelectorAll(".reveal");
+  if(!("IntersectionObserver"in window)){nodes.forEach(function(n){n.classList.add("is-visible");});return;}
+  var io=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add("is-visible");io.unobserve(en.target);}});},{rootMargin:"0px 0px -5% 0px",threshold:0.04});
+  nodes.forEach(function(n){io.observe(n);});
+})();
   </script>
 </body>
 </html>
