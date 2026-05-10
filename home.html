@@ -137,7 +137,7 @@ main{padding-top:var(--header-h)}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(90% 55% at 50% 0%,rgba(255,100,82,.08) 0%,transparent 52%),radial-gradient(55% 40% at 100% 25%,rgba(100,140,255,.07) 0%,transparent 42%),var(--bg);z-index:0}
 .hero-inner{position:relative;z-index:1;max-width:1280px;margin:0 auto;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;gap:40px}
 @media (min-width:1068px){.hero-inner{display:grid;grid-template-columns:1.05fr .95fr;gap:72px 88px;align-items:center;text-align:left}}
-@media (min-width:1068px){.hero-copy{order:1}.hero-icon-wrap{order:2}}
+@media (min-width:1068px){.hero-copy{order:1;min-width:0}.hero-icon-wrap{order:2}}
 .hero-kicker{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 16px}
 @media (min-width:1068px){.hero-kicker{margin-bottom:20px}}
 .display-hero{
@@ -145,7 +145,12 @@ main{padding-top:var(--header-h)}
   font-size:clamp(34px,8.2vw,52px);max-width:100%;
   text-wrap:balance;
 }
-@media (min-width:1068px){.display-hero{font-size:clamp(46px,4.2vw,72px);line-height:1.08}}
+@media (min-width:1068px){.display-hero{font-size:clamp(38px,3.2vw,58px);line-height:1.08}}
+/* 桌面：第一行标题保持单行；窄于断点时仍允许换行 */
+.hero-line1{display:inline}
+@media (min-width:1068px){
+  .hero-line1{white-space:nowrap}
+}
 .hero-line2{display:block;margin-top:.12em}
 .intro-hero{
   margin:24px 0 0;font-size:clamp(16px,3.6vw,20px);line-height:1.62;letter-spacing:-.015em;color:var(--text-dim);
@@ -354,7 +359,7 @@ footer{padding:48px var(--pad-x) max(40px,env(safe-area-inset-bottom));border-to
         </div>
         <div class="hero-copy">
           <p class="hero-kicker">本机 App · 适配 iPhone 与 iPad</p>
-          <h1 class="display-hero">菜谱、冰箱与智能帮手，<span class="hero-line2">一款 App 就够用。</span></h1>
+          <h1 class="display-hero"><span class="hero-line1">菜谱、冰箱与智能帮手，</span><span class="hero-line2">一款 App 就够用。</span></h1>
           <p class="intro-hero">
             Kitchen 面向日常做饭场景：菜谱与冰箱数据默认只保存在你的设备上，无需注册我们的云端账号即可使用基础功能。需要时，可再使用拍照识别菜谱、根据库存推荐菜品等 AI 能力（会员）；也可按需开启 iCloud，与家人协作维护一台「家庭冰箱」。
           </p>
