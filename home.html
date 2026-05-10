@@ -4,12 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Kitchen 厨房 — 菜谱与冰箱，一手掌握</title>
-  <meta name="description" content="Kitchen 厨房：个人菜谱库、冰箱库存、AI 智能录入与推荐。本地优先，可选 iCloud。适用于 iPhone 与 iPad。" />
-  <meta name="theme-color" content="#f5f5f7" />
-  <!--
-    本仓库为 Kitchen 公开静态站（GitHub Pages 根目录部署）。index.html = 隐私政策（同主仓逻辑）。
-    将下方 APP_STORE_URL 换成 App Store 商品页链接。
-  -->
+  <meta name="description" content="Kitchen 厨房：个人菜谱库、冰箱库存、AI 智能录入与推荐。本地优先，可选 iCloud、共享冰箱与快捷指令。适用于 iPhone 与 iPad。" />
+  <meta name="theme-color" content="#fbfbfd" />
+  <!-- 产品介绍页；隐私见 index.html。公开站请同步 app-icon.png（由 scripts/sync-kitchen-web.sh 复制）。 -->
   <script>
     window.KITCHEN_APP_STORE_URL = "https://apps.apple.com/app/idREPLACE_ME";
   </script>
@@ -17,6 +14,7 @@
     :root {
       --bg: #fbfbfd;
       --bg-elevated: #ffffff;
+      --bg-alt: #f5f5f7;
       --text: #1d1d1f;
       --text-secondary: #6e6e73;
       --text-tertiary: #86868b;
@@ -30,16 +28,19 @@
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
       --radius-lg: 28px;
       --radius-md: 18px;
+      --icon-radius: 22.37%;
       --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.06);
       --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.08);
-      --max-read: 980px;
-      --max-wide: 1200px;
+      --shadow-icon: 0 24px 48px rgba(255, 100, 82, 0.22), 0 8px 24px rgba(0, 0, 0, 0.08);
+      --max-read: 720px;
+      --max-wide: 1120px;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #000000;
         --bg-elevated: #1d1d1f;
+        --bg-alt: #0d0d0f;
         --text: #f5f5f7;
         --text-secondary: #a1a1a6;
         --text-tertiary: #6e6e73;
@@ -50,29 +51,16 @@
         --hero-mesh-3: #0a1020;
         --shadow-soft: 0 4px 32px rgba(0, 0, 0, 0.4);
         --shadow-card: 0 24px 48px rgba(0, 0, 0, 0.45);
+        --shadow-icon: 0 24px 56px rgba(0, 0, 0, 0.5);
       }
     }
 
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-      .reveal,
-      .hero-visual {
-        animation: none !important;
-        opacity: 1 !important;
-        transform: none !important;
-      }
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
     }
 
     body {
@@ -87,14 +75,8 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    a:hover {
-      opacity: 0.85;
-    }
+    a { color: inherit; text-decoration: none; }
+    a:hover { opacity: 0.88; }
 
     .nav-wrap {
       position: fixed;
@@ -109,7 +91,7 @@
     }
 
     .nav-wrap.is-scrolled {
-      background: color-mix(in srgb, var(--bg) 72%, transparent);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
       backdrop-filter: saturate(180%) blur(20px);
       border-bottom-color: var(--line);
@@ -117,41 +99,47 @@
     }
 
     @supports not (backdrop-filter: blur(20px)) {
-      .nav-wrap.is-scrolled {
-        background: var(--bg);
-      }
+      .nav-wrap.is-scrolled { background: var(--bg); }
     }
 
     .nav {
       max-width: var(--max-wide);
       margin: 0 auto;
-      padding: 0 max(22px, env(safe-area-inset-right)) 0 max(22px, env(safe-area-inset-left));
+      padding: 0 max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left));
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      gap: 16px;
     }
 
     .nav-brand {
-      font-size: 21px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 19px;
       font-weight: 600;
       letter-spacing: -0.03em;
-      display: flex;
-      align-items: baseline;
-      gap: 0.35em;
+      flex-shrink: 0;
+    }
+
+    .nav-brand img {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--icon-radius);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     }
 
     .nav-brand span {
       font-weight: 500;
       color: var(--text-secondary);
-      font-size: 0.85em;
+      font-size: 0.88em;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: clamp(8px, 2vw, 28px);
+      gap: clamp(4px, 1.2vw, 18px);
       font-size: 12px;
       font-weight: 400;
       letter-spacing: -0.01em;
@@ -162,10 +150,7 @@
       white-space: nowrap;
     }
 
-    .nav-links a:hover {
-      color: var(--text);
-      opacity: 1;
-    }
+    .nav-links a:hover { color: var(--text); opacity: 1; }
 
     .nav-cta {
       font-size: 12px;
@@ -176,153 +161,134 @@
       color: #fff !important;
     }
 
-    .nav-cta:hover {
-      opacity: 0.92;
+    .nav-cta:hover { opacity: 0.92; }
+
+    @media (max-width: 900px) {
+      .nav-links a:not(.nav-cta) { display: none; }
     }
 
-    @media (max-width: 680px) {
-      .nav-links a:not(.nav-cta) {
-        display: none;
-      }
-    }
-
-    main {
-      padding-top: var(--nav-h);
-    }
+    main { padding-top: var(--nav-h); }
 
     .hero {
       position: relative;
-      min-height: min(92vh, 900px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      padding: 48px 24px 80px;
-      text-align: center;
       overflow: hidden;
+      padding: 56px 24px 72px;
     }
 
     .hero-bg {
       position: absolute;
       inset: 0;
-      background: radial-gradient(
-          120% 80% at 50% -10%,
-          var(--hero-mesh-1) 0%,
-          transparent 55%
-        ),
-        radial-gradient(80% 50% at 100% 40%, var(--hero-mesh-3) 0%, transparent 45%),
-        radial-gradient(70% 45% at 0% 60%, var(--hero-mesh-2) 0%, transparent 50%),
+      background: radial-gradient(100% 70% at 50% -5%, var(--hero-mesh-1) 0%, transparent 50%),
+        radial-gradient(70% 50% at 100% 30%, var(--hero-mesh-3) 0%, transparent 45%),
+        radial-gradient(60% 40% at 0% 50%, var(--hero-mesh-2) 0%, transparent 48%),
         var(--bg);
       z-index: 0;
     }
 
-    .hero-visual {
+    .hero-inner {
       position: relative;
       z-index: 1;
-      width: min(340px, 78vw);
-      aspect-ratio: 1 / 2.05;
-      border-radius: 42px;
-      background: linear-gradient(
-        165deg,
-        color-mix(in srgb, var(--bg-elevated) 94%, var(--accent)) 0%,
-        var(--bg-elevated) 40%,
-        var(--bg-elevated) 100%
-      );
-      box-shadow: var(--shadow-card), 0 0 0 1px var(--line);
-      margin-bottom: 36px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      padding: 32px 24px;
-      animation: hero-float 7s ease-in-out infinite;
-    }
-
-    @keyframes hero-float {
-      0%,
-      100% {
-        transform: translateY(0) rotate(-0.5deg);
-      }
-      50% {
-        transform: translateY(-10px) rotate(0.5deg);
-      }
-    }
-
-    .hero-icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 18px;
-      background: var(--accent);
+      max-width: var(--max-wide);
+      margin: 0 auto;
       display: grid;
-      place-items: center;
-      color: #fff;
-      font-size: 36px;
-      line-height: 1;
-      box-shadow: 0 12px 28px rgba(255, 100, 82, 0.35);
+      gap: 40px;
+      align-items: center;
     }
 
-    .hero-mock-lines {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      opacity: 0.45;
+    @media (min-width: 900px) {
+      .hero-inner {
+        grid-template-columns: 1fr minmax(220px, 320px);
+        gap: 48px;
+        padding-top: 24px;
+      }
     }
 
-    .hero-mock-lines div {
-      height: 8px;
-      border-radius: 4px;
-      background: var(--text);
-      width: 100%;
-    }
-
-    .hero-mock-lines div:nth-child(2) {
-      width: 78%;
-    }
-
-    .hero-mock-lines div:nth-child(3) {
-      width: 56%;
-    }
-
-    .hero-copy {
+    .hero-icon-wrap {
+      justify-self: center;
+      width: min(240px, 52vw);
+      aspect-ratio: 1;
       position: relative;
-      z-index: 1;
-      max-width: 920px;
     }
 
-    .hero-eyebrow {
-      font-size: 19px;
+    @media (min-width: 900px) {
+      .hero-icon-wrap { justify-self: end; }
+    }
+
+    .hero-icon-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: var(--icon-radius);
+      box-shadow: var(--shadow-icon);
+    }
+
+    .hero-copy .eyebrow {
+      font-size: 14px;
       font-weight: 600;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--accent);
-      margin-bottom: 10px;
+      margin: 0 0 12px;
     }
 
-    .hero h1 {
+    .hero-copy h1 {
       margin: 0;
-      font-size: clamp(40px, 7vw, 80px);
+      font-size: clamp(36px, 5.2vw, 64px);
       font-weight: 600;
       line-height: 1.05;
       letter-spacing: -0.045em;
     }
 
-    .hero-sub {
-      margin: 18px auto 0;
-      max-width: 640px;
-      font-size: clamp(17px, 2.4vw, 24px);
-      font-weight: 400;
-      line-height: 1.4211;
+    .hero-copy .lead {
+      margin: 18px 0 0;
+      font-size: clamp(17px, 2vw, 22px);
+      line-height: 1.45;
       letter-spacing: -0.02em;
+      color: var(--text-secondary);
+      max-width: 34em;
+    }
+
+    .hero-actions {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hero-actions .store-badge img {
+      height: 52px;
+      width: auto;
+      display: block;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .pill {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--line);
       color: var(--text-secondary);
     }
 
     .section {
-      padding: 100px 24px;
+      padding: 88px 24px;
+    }
+
+    .section.alt {
+      background: var(--bg-alt);
     }
 
     .section-inner {
-      max-width: var(--max-read);
+      max-width: var(--max-wide);
       margin: 0 auto;
     }
 
@@ -332,83 +298,96 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--text-tertiary);
-      margin-bottom: 12px;
+      margin: 0 0 12px;
     }
 
     .section h2 {
       margin: 0 0 16px;
-      font-size: clamp(32px, 4.5vw, 56px);
+      font-size: clamp(28px, 3.8vw, 48px);
       font-weight: 600;
-      line-height: 1.07;
+      line-height: 1.08;
       letter-spacing: -0.035em;
+      max-width: 16ch;
     }
 
-    .section-lead {
-      margin: 0;
-      font-size: 21px;
-      line-height: 1.381;
+    .section .lead {
+      margin: 0 0 28px;
+      font-size: 19px;
+      line-height: 1.4;
       letter-spacing: -0.022em;
       color: var(--text-secondary);
-      max-width: 720px;
+      max-width: 38em;
     }
 
-    .bento {
-      margin-top: 56px;
+    .prose {
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      max-width: var(--max-read);
+    }
+
+    .prose p { margin: 0 0 1em; }
+    .prose p:last-child { margin-bottom: 0; }
+
+    .prose strong { color: var(--text); font-weight: 600; }
+
+    .bullet-list {
+      margin: 20px 0 0;
+      padding: 0;
+      list-style: none;
+      max-width: var(--max-read);
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-left: 1.15em;
+      margin-bottom: 10px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .bullet-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .grid-2 {
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 20px;
-    }
-
-    .card {
-      grid-column: span 12;
-      background: var(--bg-elevated);
-      border-radius: var(--radius-lg);
-      padding: 36px 32px;
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow-soft);
-      transition: transform 0.45s var(--ease-out), box-shadow 0.45s var(--ease-out);
-    }
-
-    @media (hover: hover) {
-      .card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-card);
-      }
+      gap: 24px;
+      margin-top: 40px;
     }
 
     @media (min-width: 800px) {
-      .card.span-6 {
-        grid-column: span 6;
-      }
-      .card.span-4 {
-        grid-column: span 4;
-      }
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+    }
+
+    .card {
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
     }
 
     .card h3 {
-      margin: 0 0 10px;
-      font-size: 24px;
+      margin: 0 0 12px;
+      font-size: 22px;
       font-weight: 600;
-      letter-spacing: -0.028em;
+      letter-spacing: -0.025em;
+      color: var(--text);
     }
 
-    .card p {
-      margin: 0;
-      font-size: 17px;
-      line-height: 1.47059;
+    .card .card-lead {
+      margin: 0 0 16px;
+      font-size: 16px;
       color: var(--text-secondary);
-      letter-spacing: -0.022em;
-    }
-
-    .card .tag {
-      display: inline-block;
-      margin-top: 16px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--accent);
-      background: var(--accent-soft);
-      padding: 4px 10px;
-      border-radius: 999px;
+      line-height: 1.5;
     }
 
     .stripe-dark {
@@ -416,71 +395,95 @@
       color: #f5f5f7;
     }
 
-    .stripe-dark .section-label {
-      color: #86868b;
-    }
-
-    .stripe-dark .section-lead,
-    .stripe-dark .card p {
-      color: #a1a1a6;
-    }
-
+    .stripe-dark .section-label { color: #86868b; }
+    .stripe-dark .lead,
+    .stripe-dark .prose,
+    .stripe-dark .bullet-list li { color: #a1a1a6; }
+    .stripe-dark h2 { color: #f5f5f7; }
     .stripe-dark .card {
       background: #1d1d1f;
       border-color: rgba(255, 255, 255, 0.1);
     }
+    .stripe-dark .card h3 { color: #f5f5f7; }
+    .stripe-dark .card .card-lead { color: #a1a1a6; }
 
-    .stripe-dark .card h3 {
-      color: #f5f5f7;
+    .compare {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 28px;
+      font-size: 15px;
     }
 
-    .reveal {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+    .compare th,
+    .compare td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
     }
 
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
+    .compare th {
+      font-weight: 600;
+      color: var(--text);
+      font-size: 13px;
+      letter-spacing: -0.01em;
+    }
+
+    .compare td {
+      color: var(--text-secondary);
+    }
+
+    .stripe-dark .compare th,
+    .stripe-dark .compare td {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .specs {
+      display: grid;
+      gap: 0;
+      margin-top: 32px;
+      max-width: 560px;
+      border-top: 1px solid var(--line);
+    }
+
+    .specs div {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+    }
+
+    .specs dt {
+      margin: 0;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .specs dd {
+      margin: 0;
+      color: var(--text-secondary);
     }
 
     .download-block {
       text-align: center;
-      padding: 120px 24px;
+      padding: 100px 24px;
     }
 
     .download-block h2 {
-      font-size: clamp(32px, 4vw, 48px);
-      font-weight: 600;
-      letter-spacing: -0.035em;
-      margin: 0 0 12px;
+      margin: 0 auto 12px;
+      max-width: none;
+      font-size: clamp(28px, 3.5vw, 44px);
     }
 
     .download-block .sub {
       color: var(--text-secondary);
-      font-size: 19px;
-      margin: 0 0 36px;
-      letter-spacing: -0.022em;
-    }
-
-    .store-badge {
-      display: inline-block;
-      transition: transform 0.35s var(--ease-out);
-    }
-
-    .store-badge:hover {
-      transform: scale(1.03);
-    }
-
-    .store-badge img {
-      height: 54px;
-      width: auto;
-      display: block;
+      font-size: 18px;
+      margin: 0 0 32px;
     }
 
     .store-note {
-      margin-top: 20px;
+      margin-top: 18px;
       font-size: 13px;
       color: var(--text-tertiary);
       max-width: 520px;
@@ -490,7 +493,7 @@
     }
 
     .biz {
-      padding: 100px 24px 120px;
+      padding: 88px 24px 100px;
       background: color-mix(in srgb, var(--bg) 88%, var(--accent-soft));
     }
 
@@ -498,46 +501,50 @@
       max-width: var(--max-wide);
       margin: 0 auto;
       display: grid;
-      gap: 32px;
+      gap: 28px;
     }
 
-    @media (min-width: 900px) {
-      .biz-grid {
-        grid-template-columns: 1fr 1fr;
-        align-items: start;
-      }
+    @media (min-width: 880px) {
+      .biz-grid { grid-template-columns: 1fr 1fr; }
     }
 
     .biz-card {
       background: var(--bg-elevated);
       border-radius: var(--radius-lg);
-      padding: 40px;
+      padding: 36px;
       border: 1px solid var(--line);
       box-shadow: var(--shadow-soft);
     }
 
     .biz-card h3 {
       margin: 0 0 12px;
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 600;
       letter-spacing: -0.028em;
     }
 
     .biz-card p {
-      margin: 0 0 16px;
+      margin: 0 0 14px;
       color: var(--text-secondary);
       font-size: 17px;
       line-height: 1.5;
     }
 
     .email-link {
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 500;
       color: var(--accent);
     }
 
+    .inline-link {
+      color: var(--accent);
+      font-weight: 500;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
     footer {
-      padding: 48px 24px 64px;
+      padding: 44px 24px 56px;
       border-top: 1px solid var(--line);
       font-size: 12px;
       color: var(--text-tertiary);
@@ -548,7 +555,7 @@
       margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
-      gap: 16px 32px;
+      gap: 16px 28px;
       justify-content: space-between;
       align-items: center;
     }
@@ -556,27 +563,52 @@
     .footer-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
+      gap: 18px;
     }
 
-    .footer-links a {
-      color: var(--text-secondary);
+    .footer-links a { color: var(--text-secondary); }
+    .footer-links a:hover { color: var(--text); opacity: 1; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
     }
 
-    .footer-links a:hover {
-      color: var(--text);
+    .reveal.is-visible {
       opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tag {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
     }
   </style>
 </head>
 <body>
   <div class="nav-wrap" id="nav">
     <nav class="nav" aria-label="主导航">
-      <a href="home.html" class="nav-brand">Kitchen <span>厨房</span></a>
+      <a href="home.html" class="nav-brand">
+        <img src="app-icon.png" width="30" height="30" alt="" decoding="async" />
+        Kitchen <span>厨房</span>
+      </a>
       <div class="nav-links">
-        <a href="#features">功能</a>
-        <a href="#download">下载</a>
-        <a href="#business">商业合作</a>
+        <a href="#overview">概览</a>
+        <a href="#recipes">菜谱</a>
+        <a href="#fridge">冰箱</a>
+        <a href="#ai">AI</a>
+        <a href="#system">系统</a>
+        <a href="#membership">会员</a>
+        <a href="#privacy">隐私</a>
         <a href="support.html">支持</a>
         <a class="nav-cta" href="#download">获取 App</a>
       </div>
@@ -586,97 +618,220 @@
   <main>
     <header class="hero">
       <div class="hero-bg" aria-hidden="true"></div>
-      <div class="hero-visual" aria-hidden="true">
-        <div class="hero-icon" title="Kitchen">🍳</div>
-        <div class="hero-mock-lines">
-          <div></div>
-          <div></div>
-          <div></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Kitchen 厨房</p>
+          <h1>菜谱、冰箱与智能帮手，<br />都在这一个 App 里。</h1>
+          <p class="lead">
+            为日常做饭做的本地优先工作台：建立自己的菜谱库、看清冰箱里有什么、何时过期；需要时再用 AI 加速录入与灵感。无需注册账号即可上手，数据默认只保存在你的设备上；可选开启 iCloud 与家庭成员共享一台「家庭冰箱」。
+          </p>
+          <div class="hero-actions">
+            <a class="store-badge" id="storeLink" href="#" aria-label="在 App Store 下载 Kitchen 厨房">
+              <picture>
+                <source media="(prefers-color-scheme: dark)" srcset="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/white/zh-cn?size=250x83" />
+                <img src="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/black/zh-cn?size=250x83" alt="App Store 下载" width="180" height="60" loading="eager" />
+              </picture>
+            </a>
+          </div>
+          <div class="pill-row" aria-label="要点">
+            <span class="pill">无需账号</span>
+            <span class="pill">数据默认本机</span>
+            <span class="pill">iPhone 与 iPad</span>
+            <span class="pill">iOS / iPadOS 26.4 或更高</span>
+          </div>
         </div>
-      </div>
-      <div class="hero-copy">
-        <p class="hero-eyebrow">本地优先。你的厨房数据，由你掌控。</p>
-        <h1>做菜有谱，<br />冰箱有序。</h1>
-        <p class="hero-sub">
-          Kitchen 厨房将菜谱库、食材库存与可选 AI 工具融于一处——无需账号即可开始；需要时再接上 iCloud、共享冰箱与快捷指令。
-        </p>
+        <div class="hero-icon-wrap">
+          <img src="app-icon.png" width="512" height="512" alt="Kitchen 厨房 App 图标" />
+        </div>
       </div>
     </header>
 
-    <section class="section" id="features">
+    <section class="section alt" id="overview">
       <div class="section-inner">
-        <p class="section-label reveal">产品</p>
-        <h2 class="reveal">为日常做饭<br />重新设计的一体化工作台。</h2>
-        <p class="section-lead reveal">
-          从记录一道拿手菜，到盯着临期食材决定今晚吃什么——少切几个 App，多留一点心思给灶台上的火候。
+        <p class="section-label reveal">概览</p>
+        <h2 class="reveal">从「今晚吃什么」到「这盒牛奶哪天过期」，<br />少在几个 App 之间来回切。</h2>
+        <p class="lead reveal">
+          Kitchen 把<strong>个人菜谱库</strong>、<strong>家庭冰箱库存</strong>与<strong>可选 AI 工具</strong>放在同一套导航里：不依赖自建后端，也不强制你登录第三方账号。你可以完全离线地维护菜谱与食材；在愿意承担网络请求时，再使用拍照识谱、根据库存推荐一道菜等能力。
         </p>
+        <div class="prose reveal">
+          <p>
+            菜谱支持手动撰写、从照片识别、从相册导入，或由菜名生成草稿；支持按标签、难度、辣度、忌口等多维筛选，步骤可配图，支持收藏、随机抽菜与分享。冰箱侧支持分类、数量、调料区分，以及「直接填写到期日」或「生产日期 + 保质期」两种时间模型，自动用颜色区分新鲜、临期与已过期，并支持周预算与变更历史。
+          </p>
+          <p>
+            进阶能力包括：iCloud 在你自己的 Apple 设备之间同步、通过 CloudKit Sharing 与家人维护共享冰箱、DeepSeek 驱动的 AI 录入与推荐、Siri 与快捷指令、主屏小组件「今天吃什么」、Spotlight 搜索菜谱、30 天回收站与 iPad 上的侧栏 / 多列布局。其中 AI、iCloud、共享冰箱与快捷指令等属于<strong>会员能力</strong>；本地菜谱、冰箱、全局搜索与回收站等基础能力可免费使用。
+          </p>
+        </div>
+      </div>
+    </section>
 
-        <div class="bento">
-          <article class="card span-6 reveal">
-            <h3>菜谱库</h3>
-            <p>手写、拍照识别、相册导入或从菜名生成；标签、难度、辣度与忌口筛选；步骤配图、收藏与随机抽菜。</p>
-            <span class="tag">菜单 · 分享</span>
+    <section class="section" id="recipes">
+      <div class="section-inner">
+        <p class="section-label reveal">菜谱</p>
+        <h2 class="reveal">一道菜，从想法到可照做的步骤。</h2>
+        <p class="lead reveal">四种录入方式，照顾不同场景：手写整理、拍下锅里的成品、从相册挑一张旧图，或只输入菜名让 AI 生成一版可编辑草稿。</p>
+        <ul class="bullet-list reveal">
+          <li><strong>手动录入</strong>：食材、调料、步骤、备注完整可控，步骤可逐条配图。</li>
+          <li><strong>拍照 / 相册</strong>：把纸质菜谱或社交平台上看到的成品图交给识别流程，减少打字。</li>
+          <li><strong>菜名生成</strong>：输入菜名，生成一版结构化的菜谱草稿后再微调。</li>
+          <li><strong>整理与检索</strong>：标签、难度、辣度、忌口筛选；收藏、随机抽菜；需要时分享菜谱文本或图片。</li>
+          <li><strong>AI 改写步骤</strong>（会员）：在已定稿的基础上，让措辞更适合新手或更简洁（仍由你确认保存）。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section alt" id="fridge">
+      <div class="section-inner">
+        <p class="section-label reveal">冰箱</p>
+        <h2 class="reveal">库存、临期与采购，一眼有数。</h2>
+        <p class="lead reveal">按食材与调料分类管理数量；时间信息既支持直接填到期日，也支持「生产日期 + 保质期」推算，方便牛奶、酱料等不同包装习惯。</p>
+        <div class="grid-2">
+          <article class="card reveal">
+            <h3>状态与提醒</h3>
+            <p class="card-lead">新鲜、临期、已过期以颜色区分；过期项可仅提醒或按你的设置自动进入清理流程，减少浪费与遗忘。</p>
+            <span class="tag">临期</span>
           </article>
-          <article class="card span-6 reveal">
-            <h3>冰箱库存</h3>
-            <p>按分类与数量管理食材与调料；支持到期日或「生产日期 + 保质期」；新鲜、临期、过期一目了然，减少浪费。</p>
-            <span class="tag">临期 · 周预算</span>
+          <article class="card reveal">
+            <h3>多冰箱与历史</h3>
+            <p class="card-lead">同一账号下可维护多台冰箱（自家、父母家、合租屋等）；支持周预算与变更历史，方便回顾「这周多买了什么」。</p>
+            <span class="tag">家庭</span>
           </article>
-          <article class="card span-4 reveal">
-            <h3>AI 工具</h3>
-            <p>仅在您主动操作时处理当次内容；识图、语音拆条入库、根据冰箱推荐一道菜——由你选择是否开启。</p>
-            <span class="tag">DeepSeek</span>
+        </div>
+        <p class="lead reveal" style="margin-top: 36px">
+          与 CloudKit 结合后，你可以邀请家人共同维护<strong>共享冰箱</strong>（会员）：谁买了菜、谁更新了数量，都能在同一视图里对齐，减少群里反复问「家里还有酱油吗」。
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="ai">
+      <div class="section-inner">
+        <p class="section-label reveal">AI</p>
+        <h2 class="reveal">只在你说「现在处理」时，才把内容交给模型。</h2>
+        <p class="lead reveal">Kitchen 的 AI 能力由 DeepSeek 提供支持；设计上强调<strong>显式触发</strong>与<strong>最小必要传输</strong>：不会在后台默默上传你的全部数据。</p>
+        <ul class="bullet-list reveal">
+          <li>识别菜谱照片，提取食材、步骤与份量结构。</li>
+          <li>解析食材或调料照片，辅助写入冰箱条目。</li>
+          <li>将语音转写后的整段话拆成多条可确认的冰箱入库项。</li>
+          <li>根据菜名生成完整菜谱草稿。</li>
+          <li>结合当前冰箱库存，推荐「今晚可以做的一道菜」。</li>
+          <li>对已写好的菜谱步骤做语气或详略上的改写（会员）。</li>
+        </ul>
+        <p class="prose reveal" style="margin-top: 24px">
+          上述能力均在<strong>会员</strong>范围内；使用前需在 App 内配置可用的 AI 访问方式。若你关心数据边界，请阅读我们的<a class="inline-link" href="index.html">隐私政策</a>，其中说明了默认本机存储、可选 iCloud、以及 AI 请求的发送范围。
+        </p>
+      </div>
+    </section>
+
+    <section class="section stripe-dark" id="system">
+      <div class="section-inner">
+        <p class="section-label reveal">与系统深度协作</p>
+        <h2 class="reveal">不只是独立 App，<br />也融入你已有的 Apple 习惯。</h2>
+        <div class="grid-2" style="margin-top: 8px">
+          <article class="card reveal">
+            <h3>Siri 与快捷指令</h3>
+            <p class="card-lead">通过系统快捷入口触发添加食材、查询库存、朗读清单、推荐菜品等动作；支持多轮 Siri 对话，例如在「我买了点东西想加到冰箱里」后，由 Siri 追问细节并在 App 内弹出确认面板。</p>
+            <span class="tag">Shortcuts</span>
           </article>
-          <article class="card span-4 reveal">
+          <article class="card reveal">
+            <h3>小组件、Spotlight 与主屏</h3>
+            <p class="card-lead">主屏小 / 中尺寸小组件展示「今天吃什么」；在系统搜索中直接按菜名找到菜谱；长按图标可展开常用快捷操作。</p>
+            <span class="tag">Widget</span>
+          </article>
+          <article class="card reveal">
+            <h3>iPad 布局</h3>
+            <p class="card-lead">在较宽视图上采用侧栏与列表—详情联动；菜谱网格支持多列，方便浏览与对照步骤，边做菜边看更舒服。</p>
+            <span class="tag">iPadOS</span>
+          </article>
+          <article class="card reveal">
             <h3>iCloud 与共享</h3>
-            <p>数据默认在本机；可选同步到你的 Apple 设备，或通过 CloudKit 与家人维护同一台「家庭冰箱」。</p>
-            <span class="tag">隐私设计</span>
-          </article>
-          <article class="card span-4 reveal">
-            <h3>Siri、小组件与 iPad</h3>
-            <p>快捷指令与多轮 Siri 场景；主屏小组件「今天吃什么」；iPad 侧栏与多列菜谱，边看边做更从容。</p>
-            <span class="tag">iPhone & iPad</span>
+            <p class="card-lead">数据默认仅存本机。开启 iCloud 后，内容存放在你的 Apple ID 对应容器中；共享冰箱则通过 Apple 的 CloudKit Sharing 邀请家人参与（均为会员相关能力）。</p>
+            <span class="tag">CloudKit</span>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section stripe-dark">
+    <section class="section" id="membership">
       <div class="section-inner">
-        <p class="section-label reveal">体验</p>
-        <h2 class="reveal">没有后端账号体系。<br />就没有多余的登录墙。</h2>
-        <p class="section-lead reveal">
-          会员用于解锁 AI、iCloud、共享冰箱与快捷指令等进阶能力；本地菜谱、冰箱、搜索与回收站等基础能力可免费使用。订阅由 Apple 处理，符合你熟悉的那套 App Store 体验。
+        <p class="section-label reveal">会员</p>
+        <h2 class="reveal">基础免费用，进阶按订阅或买断解锁。</h2>
+        <p class="lead reveal">订阅与价格由 App Store 展示与扣款；你可以在设置中管理会员状态。以下为能力划分概要，具体以 App 内说明为准。</p>
+        <table class="compare reveal">
+          <thead>
+            <tr>
+              <th>能力</th>
+              <th>免费</th>
+              <th>会员</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>本地菜谱库（录入、筛选、收藏、随机、分享等）</td>
+              <td>✓</td>
+              <td>✓</td>
+            </tr>
+            <tr>
+              <td>本地冰箱、搜索、回收站、备份与导入</td>
+              <td>✓</td>
+              <td>✓</td>
+            </tr>
+            <tr>
+              <td>AI 识图、生成、推荐、语音拆条、步骤改写</td>
+              <td>—</td>
+              <td>✓</td>
+            </tr>
+            <tr>
+              <td>iCloud 同步、共享冰箱、完整快捷指令能力</td>
+              <td>—</td>
+              <td>✓</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="prose reveal" style="margin-top: 24px">
+          订阅条款、自动续费与退款流程遵循 Apple 标准流程：可在「设置 → Apple ID → 订阅」中查看与取消。应用内亦提供与购买相关的法律链接（使用条款与隐私政策）。
         </p>
+      </div>
+    </section>
+
+    <section class="section alt" id="privacy">
+      <div class="section-inner">
+        <p class="section-label reveal">隐私与安全</p>
+        <h2 class="reveal">本地优先，不是一句口号。</h2>
+        <p class="lead reveal">
+          Kitchen 不运营「登录我们服务器才能用」的账号体系：菜谱与冰箱的默认存储位置是你的设备。开启 iCloud 时，数据进入<strong>你自己的</strong> Apple ID 容器；AI 功能只在你主动发起相关操作时，通过 HTTPS 将<strong>当次</strong>需要处理的文字或图片发往第三方 AI 服务。
+        </p>
+        <div class="prose reveal">
+          <p>
+            我们不会为广告目的收集账号、邮箱、设备标识符、定位、通讯录或健康数据。若你需要删除某次 AI 请求涉及的记录、或对会员与数据有疑问，可通过支持页面中的邮箱联系我们；完整条款见<a class="inline-link" href="index.html">隐私政策全文</a>。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="specs">
+      <div class="section-inner">
+        <p class="section-label reveal">规格</p>
+        <h2 class="reveal">在开始之前。</h2>
+        <dl class="specs reveal">
+          <div><dt>平台</dt><dd>iPhone、iPad（通用购买以 App Store 为准）</dd></div>
+          <div><dt>系统</dt><dd>iOS / iPadOS 26.4 或更高版本</dd></div>
+          <div><dt>语言</dt><dd>界面支持简体中文与英文（随系统语言切换）</dd></div>
+          <div><dt>网络</dt><dd>离线可用核心菜谱与冰箱；AI 与 iCloud 需互联网</dd></div>
+          <div><dt>大小</dt><dd>以 App Store 显示的安装体积为准</dd></div>
+        </dl>
       </div>
     </section>
 
     <section class="download-block" id="download">
-      <h2 class="reveal">在 iPhone 与 iPad 上下载 Kitchen。</h2>
-      <p class="sub reveal">要求 iOS / iPadOS 与产品版本说明以 App Store 为准。</p>
-      <a
-        class="store-badge reveal"
-        id="storeLink"
-        href="#"
-        aria-label="在 App Store 下载 Kitchen 厨房"
-      >
+      <h2 class="reveal">在 App Store 获取 Kitchen 厨房。</h2>
+      <p class="sub reveal">上架信息与最低系统版本以商店页面为准。</p>
+      <a class="store-badge reveal" id="storeLinkFooter" href="#" aria-label="在 App Store 下载">
         <picture>
-          <source
-            media="(prefers-color-scheme: dark)"
-            srcset="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/white/zh-cn?size=250x83"
-          />
-          <img
-            src="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/black/zh-cn?size=250x83"
-            alt="Download on the App Store"
-            width="180"
-            height="60"
-            loading="lazy"
-          />
+          <source media="(prefers-color-scheme: dark)" srcset="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/white/zh-cn?size=250x83" />
+          <img src="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/black/zh-cn?size=250x83" alt="App Store" width="180" height="60" loading="lazy" />
         </picture>
       </a>
       <p class="store-note reveal">
-        若链接尚未生效，请在 Xcode 为应用配置 App Store 数字 ID 后，将本页顶部的
-        <code style="font-size: 12px">KITCHEN_APP_STORE_URL</code> 替换为正式商品页地址。
+        若尚未配置 App Store 数字 ID，请在页面顶部脚本中将 <code style="font-size: 12px">KITCHEN_APP_STORE_URL</code> 替换为正式商品链接。
       </p>
     </section>
 
@@ -684,19 +839,13 @@
       <div class="biz-grid">
         <div class="biz-card reveal">
           <h3>商业合作</h3>
-          <p>
-            我们欢迎品牌联名、内容合作、企业礼品码、媒体评测与本地化伙伴等方向的洽谈。请用工作邮箱说明合作类型、时间线与期望成果，便于我们快速评估。
-          </p>
-          <p>
-            <a class="email-link" href="mailto:Harry.linn@hotmail.com?subject=Kitchen%20%E5%95%86%E4%B8%9A%E5%90%88%E4%BD%9C">Harry.linn@hotmail.com</a>
-          </p>
+          <p>欢迎品牌联名、内容合作、企业礼品码、媒体评测与本地化伙伴等方向。请用工作邮箱说明合作类型、时间与期望成果。</p>
+          <p><a class="email-link" href="mailto:Harry.linn@hotmail.com?subject=Kitchen%20%E5%95%86%E4%B8%9A%E5%90%88%E4%BD%9C">Harry.linn@hotmail.com</a></p>
         </div>
         <div class="biz-card reveal">
           <h3>用户支持</h3>
-          <p>功能咨询、数据与 iCloud、会员与订阅问题，请参阅支持页面或发送邮件——我们通常在 7 个工作日内回复。</p>
-          <p>
-            <a class="email-link" href="support.html">前往支持页面 →</a>
-          </p>
+          <p>功能、数据、iCloud、会员与订阅等问题，请查看支持页或发邮件；我们通常在 7 个工作日内回复。</p>
+          <p><a class="email-link" href="support.html">前往支持页面 →</a></p>
         </div>
       </div>
     </section>
@@ -704,7 +853,7 @@
 
   <footer>
     <div class="footer-inner">
-      <p style="margin: 0">Copyright © 2026 Kitchen 厨房。保留所有权利。</p>
+      <p style="margin: 0">© 2026 Kitchen 厨房。保留所有权利。</p>
       <div class="footer-links">
         <a href="index.html">隐私政策</a>
         <a href="support.html">支持</a>
@@ -716,19 +865,26 @@
   <script>
     (function () {
       var nav = document.getElementById("nav");
-      var storeLink = document.getElementById("storeLink");
       var url = window.KITCHEN_APP_STORE_URL || "";
-      if (url && url.indexOf("REPLACE_ME") === -1) {
-        storeLink.setAttribute("href", url);
-        storeLink.setAttribute("target", "_blank");
-        storeLink.setAttribute("rel", "noopener noreferrer");
-      } else {
-        storeLink.setAttribute("href", "#download");
-        storeLink.addEventListener("click", function (e) {
-          e.preventDefault();
-          document.getElementById("download").scrollIntoView({ behavior: "smooth" });
-        });
+      var valid = url && url.indexOf("REPLACE_ME") === -1;
+
+      function bindStoreLink(el) {
+        if (!el) return;
+        if (valid) {
+          el.setAttribute("href", url);
+          el.setAttribute("target", "_blank");
+          el.setAttribute("rel", "noopener noreferrer");
+        } else {
+          el.setAttribute("href", "#download");
+          el.addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("download").scrollIntoView({ behavior: "smooth" });
+          });
+        }
       }
+
+      bindStoreLink(document.getElementById("storeLink"));
+      bindStoreLink(document.getElementById("storeLinkFooter"));
 
       function onScroll() {
         nav.classList.toggle("is-scrolled", window.scrollY > 8);
@@ -738,9 +894,7 @@
 
       var nodes = document.querySelectorAll(".reveal");
       if (!("IntersectionObserver" in window)) {
-        nodes.forEach(function (n) {
-          n.classList.add("is-visible");
-        });
+        nodes.forEach(function (n) { n.classList.add("is-visible"); });
         return;
       }
       var io = new IntersectionObserver(
@@ -752,11 +906,9 @@
             }
           });
         },
-        { rootMargin: "0px 0px -10% 0px", threshold: 0.08 }
+        { rootMargin: "0px 0px -8% 0px", threshold: 0.06 }
       );
-      nodes.forEach(function (n) {
-        io.observe(n);
-      });
+      nodes.forEach(function (n) { io.observe(n); });
     })();
   </script>
 </body>

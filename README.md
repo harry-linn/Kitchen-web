@@ -11,5 +11,6 @@ Kitchen iOS 应用的**公开**静态页面：隐私政策、产品介绍、支�
 | 路径 | 内容 |
 |------|------|
 | `/` | 隐私政策（`index.html` + `PRIVACY_POLICY.md`） |
-| `/home.html` | 产品介绍 |
+| `/home.html` | 产品介绍（含 `app-icon.png` 真机图标） |
 | `/support.html` | 支持 |
+| `/app-icon.png` | App Store 图标资源 |
