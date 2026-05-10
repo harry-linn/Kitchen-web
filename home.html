@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Kitchen 厨房 — 菜谱与冰箱，一手掌握</title>
+  <meta name="description" content="Kitchen 厨房：个人菜谱库、冰箱库存、AI 智能录入与推荐。本地优先，可选 iCloud。适用于 iPhone 与 iPad。" />
+  <meta name="theme-color" content="#f5f5f7" />
+  <!--
+    本仓库为 Kitchen 公开静态站（GitHub Pages 根目录部署）。index.html = 隐私政策（同主仓逻辑）。
+    将下方 APP_STORE_URL 换成 App Store 商品页链接。
+  -->
+  <script>
+    window.KITCHEN_APP_STORE_URL = "https://apps.apple.com/app/idREPLACE_ME";
+  </script>
+  <style>
+    :root {
+      --bg: #fbfbfd;
+      --bg-elevated: #ffffff;
+      --text: #1d1d1f;
+      --text-secondary: #6e6e73;
+      --text-tertiary: #86868b;
+      --line: rgba(0, 0, 0, 0.08);
+      --accent: #ff6452;
+      --accent-soft: rgba(255, 100, 82, 0.12);
+      --hero-mesh-1: #fff5f2;
+      --hero-mesh-2: #f5f5f7;
+      --hero-mesh-3: #eef3ff;
+      --nav-h: 52px;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.06);
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.08);
+      --max-read: 980px;
+      --max-wide: 1200px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000000;
+        --bg-elevated: #1d1d1f;
+        --text: #f5f5f7;
+        --text-secondary: #a1a1a6;
+        --text-tertiary: #6e6e73;
+        --line: rgba(255, 255, 255, 0.12);
+        --accent-soft: rgba(255, 100, 82, 0.2);
+        --hero-mesh-1: #1a0a08;
+        --hero-mesh-2: #0d0d0f;
+        --hero-mesh-3: #0a1020;
+        --shadow-soft: 0 4px 32px rgba(0, 0, 0, 0.4);
+        --shadow-card: 0 24px 48px rgba(0, 0, 0, 0.45);
+      }
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      .reveal,
+      .hero-visual {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 17px;
+      line-height: 1.47059;
+      letter-spacing: -0.022em;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:hover {
+      opacity: 0.85;
+    }
+
+    .nav-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      height: var(--nav-h);
+      transition: background 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out),
+        border-color 0.35s var(--ease-out);
+      border-bottom: 1px solid transparent;
+    }
+
+    .nav-wrap.is-scrolled {
+      background: color-mix(in srgb, var(--bg) 72%, transparent);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom-color: var(--line);
+      box-shadow: var(--shadow-soft);
+    }
+
+    @supports not (backdrop-filter: blur(20px)) {
+      .nav-wrap.is-scrolled {
+        background: var(--bg);
+      }
+    }
+
+    .nav {
+      max-width: var(--max-wide);
+      margin: 0 auto;
+      padding: 0 max(22px, env(safe-area-inset-right)) 0 max(22px, env(safe-area-inset-left));
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .nav-brand {
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: baseline;
+      gap: 0.35em;
+    }
+
+    .nav-brand span {
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-size: 0.85em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 2vw, 28px);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      opacity: 1;
+    }
+
+    .nav-cta {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff !important;
+    }
+
+    .nav-cta:hover {
+      opacity: 0.92;
+    }
+
+    @media (max-width: 680px) {
+      .nav-links a:not(.nav-cta) {
+        display: none;
+      }
+    }
+
+    main {
+      padding-top: var(--nav-h);
+    }
+
+    .hero {
+      position: relative;
+      min-height: min(92vh, 900px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 48px 24px 80px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+          120% 80% at 50% -10%,
+          var(--hero-mesh-1) 0%,
+          transparent 55%
+        ),
+        radial-gradient(80% 50% at 100% 40%, var(--hero-mesh-3) 0%, transparent 45%),
+        radial-gradient(70% 45% at 0% 60%, var(--hero-mesh-2) 0%, transparent 50%),
+        var(--bg);
+      z-index: 0;
+    }
+
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+      width: min(340px, 78vw);
+      aspect-ratio: 1 / 2.05;
+      border-radius: 42px;
+      background: linear-gradient(
+        165deg,
+        color-mix(in srgb, var(--bg-elevated) 94%, var(--accent)) 0%,
+        var(--bg-elevated) 40%,
+        var(--bg-elevated) 100%
+      );
+      box-shadow: var(--shadow-card), 0 0 0 1px var(--line);
+      margin-bottom: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 32px 24px;
+      animation: hero-float 7s ease-in-out infinite;
+    }
+
+    @keyframes hero-float {
+      0%,
+      100% {
+        transform: translateY(0) rotate(-0.5deg);
+      }
+      50% {
+        transform: translateY(-10px) rotate(0.5deg);
+      }
+    }
+
+    .hero-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      background: var(--accent);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 36px;
+      line-height: 1;
+      box-shadow: 0 12px 28px rgba(255, 100, 82, 0.35);
+    }
+
+    .hero-mock-lines {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      opacity: 0.45;
+    }
+
+    .hero-mock-lines div {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--text);
+      width: 100%;
+    }
+
+    .hero-mock-lines div:nth-child(2) {
+      width: 78%;
+    }
+
+    .hero-mock-lines div:nth-child(3) {
+      width: 56%;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      max-width: 920px;
+    }
+
+    .hero-eyebrow {
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(40px, 7vw, 80px);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+    }
+
+    .hero-sub {
+      margin: 18px auto 0;
+      max-width: 640px;
+      font-size: clamp(17px, 2.4vw, 24px);
+      font-weight: 400;
+      line-height: 1.4211;
+      letter-spacing: -0.02em;
+      color: var(--text-secondary);
+    }
+
+    .section {
+      padding: 100px 24px;
+    }
+
+    .section-inner {
+      max-width: var(--max-read);
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+    }
+
+    .section h2 {
+      margin: 0 0 16px;
+      font-size: clamp(32px, 4.5vw, 56px);
+      font-weight: 600;
+      line-height: 1.07;
+      letter-spacing: -0.035em;
+    }
+
+    .section-lead {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.381;
+      letter-spacing: -0.022em;
+      color: var(--text-secondary);
+      max-width: 720px;
+    }
+
+    .bento {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      grid-column: span 12;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.45s var(--ease-out), box-shadow 0.45s var(--ease-out);
+    }
+
+    @media (hover: hover) {
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-card);
+      }
+    }
+
+    @media (min-width: 800px) {
+      .card.span-6 {
+        grid-column: span 6;
+      }
+      .card.span-4 {
+        grid-column: span 4;
+      }
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.028em;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.47059;
+      color: var(--text-secondary);
+      letter-spacing: -0.022em;
+    }
+
+    .card .tag {
+      display: inline-block;
+      margin-top: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .stripe-dark {
+      background: #000;
+      color: #f5f5f7;
+    }
+
+    .stripe-dark .section-label {
+      color: #86868b;
+    }
+
+    .stripe-dark .section-lead,
+    .stripe-dark .card p {
+      color: #a1a1a6;
+    }
+
+    .stripe-dark .card {
+      background: #1d1d1f;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .stripe-dark .card h3 {
+      color: #f5f5f7;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .download-block {
+      text-align: center;
+      padding: 120px 24px;
+    }
+
+    .download-block h2 {
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 600;
+      letter-spacing: -0.035em;
+      margin: 0 0 12px;
+    }
+
+    .download-block .sub {
+      color: var(--text-secondary);
+      font-size: 19px;
+      margin: 0 0 36px;
+      letter-spacing: -0.022em;
+    }
+
+    .store-badge {
+      display: inline-block;
+      transition: transform 0.35s var(--ease-out);
+    }
+
+    .store-badge:hover {
+      transform: scale(1.03);
+    }
+
+    .store-badge img {
+      height: 54px;
+      width: auto;
+      display: block;
+    }
+
+    .store-note {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+    }
+
+    .biz {
+      padding: 100px 24px 120px;
+      background: color-mix(in srgb, var(--bg) 88%, var(--accent-soft));
+    }
+
+    .biz-grid {
+      max-width: var(--max-wide);
+      margin: 0 auto;
+      display: grid;
+      gap: 32px;
+    }
+
+    @media (min-width: 900px) {
+      .biz-grid {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+      }
+    }
+
+    .biz-card {
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .biz-card h3 {
+      margin: 0 0 12px;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.028em;
+    }
+
+    .biz-card p {
+      margin: 0 0 16px;
+      color: var(--text-secondary);
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .email-link {
+      font-size: 19px;
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    footer {
+      padding: 48px 24px 64px;
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .footer-inner {
+      max-width: var(--max-wide);
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 32px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-wrap" id="nav">
+    <nav class="nav" aria-label="主导航">
+      <a href="home.html" class="nav-brand">Kitchen <span>厨房</span></a>
+      <div class="nav-links">
+        <a href="#features">功能</a>
+        <a href="#download">下载</a>
+        <a href="#business">商业合作</a>
+        <a href="support.html">支持</a>
+        <a class="nav-cta" href="#download">获取 App</a>
+      </div>
+    </nav>
+  </div>
+
+  <main>
+    <header class="hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-icon" title="Kitchen">🍳</div>
+        <div class="hero-mock-lines">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+      <div class="hero-copy">
+        <p class="hero-eyebrow">本地优先。你的厨房数据，由你掌控。</p>
+        <h1>做菜有谱，<br />冰箱有序。</h1>
+        <p class="hero-sub">
+          Kitchen 厨房将菜谱库、食材库存与可选 AI 工具融于一处——无需账号即可开始；需要时再接上 iCloud、共享冰箱与快捷指令。
+        </p>
+      </div>
+    </header>
+
+    <section class="section" id="features">
+      <div class="section-inner">
+        <p class="section-label reveal">产品</p>
+        <h2 class="reveal">为日常做饭<br />重新设计的一体化工作台。</h2>
+        <p class="section-lead reveal">
+          从记录一道拿手菜，到盯着临期食材决定今晚吃什么——少切几个 App，多留一点心思给灶台上的火候。
+        </p>
+
+        <div class="bento">
+          <article class="card span-6 reveal">
+            <h3>菜谱库</h3>
+            <p>手写、拍照识别、相册导入或从菜名生成；标签、难度、辣度与忌口筛选；步骤配图、收藏与随机抽菜。</p>
+            <span class="tag">菜单 · 分享</span>
+          </article>
+          <article class="card span-6 reveal">
+            <h3>冰箱库存</h3>
+            <p>按分类与数量管理食材与调料；支持到期日或「生产日期 + 保质期」；新鲜、临期、过期一目了然，减少浪费。</p>
+            <span class="tag">临期 · 周预算</span>
+          </article>
+          <article class="card span-4 reveal">
+            <h3>AI 工具</h3>
+            <p>仅在您主动操作时处理当次内容；识图、语音拆条入库、根据冰箱推荐一道菜——由你选择是否开启。</p>
+            <span class="tag">DeepSeek</span>
+          </article>
+          <article class="card span-4 reveal">
+            <h3>iCloud 与共享</h3>
+            <p>数据默认在本机；可选同步到你的 Apple 设备，或通过 CloudKit 与家人维护同一台「家庭冰箱」。</p>
+            <span class="tag">隐私设计</span>
+          </article>
+          <article class="card span-4 reveal">
+            <h3>Siri、小组件与 iPad</h3>
+            <p>快捷指令与多轮 Siri 场景；主屏小组件「今天吃什么」；iPad 侧栏与多列菜谱，边看边做更从容。</p>
+            <span class="tag">iPhone & iPad</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section stripe-dark">
+      <div class="section-inner">
+        <p class="section-label reveal">体验</p>
+        <h2 class="reveal">没有后端账号体系。<br />就没有多余的登录墙。</h2>
+        <p class="section-lead reveal">
+          会员用于解锁 AI、iCloud、共享冰箱与快捷指令等进阶能力；本地菜谱、冰箱、搜索与回收站等基础能力可免费使用。订阅由 Apple 处理，符合你熟悉的那套 App Store 体验。
+        </p>
+      </div>
+    </section>
+
+    <section class="download-block" id="download">
+      <h2 class="reveal">在 iPhone 与 iPad 上下载 Kitchen。</h2>
+      <p class="sub reveal">要求 iOS / iPadOS 与产品版本说明以 App Store 为准。</p>
+      <a
+        class="store-badge reveal"
+        id="storeLink"
+        href="#"
+        aria-label="在 App Store 下载 Kitchen 厨房"
+      >
+        <picture>
+          <source
+            media="(prefers-color-scheme: dark)"
+            srcset="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/white/zh-cn?size=250x83"
+          />
+          <img
+            src="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/black/zh-cn?size=250x83"
+            alt="Download on the App Store"
+            width="180"
+            height="60"
+            loading="lazy"
+          />
+        </picture>
+      </a>
+      <p class="store-note reveal">
+        若链接尚未生效，请在 Xcode 为应用配置 App Store 数字 ID 后，将本页顶部的
+        <code style="font-size: 12px">KITCHEN_APP_STORE_URL</code> 替换为正式商品页地址。
+      </p>
+    </section>
+
+    <section class="biz" id="business">
+      <div class="biz-grid">
+        <div class="biz-card reveal">
+          <h3>商业合作</h3>
+          <p>
+            我们欢迎品牌联名、内容合作、企业礼品码、媒体评测与本地化伙伴等方向的洽谈。请用工作邮箱说明合作类型、时间线与期望成果，便于我们快速评估。
+          </p>
+          <p>
+            <a class="email-link" href="mailto:Harry.linn@hotmail.com?subject=Kitchen%20%E5%95%86%E4%B8%9A%E5%90%88%E4%BD%9C">Harry.linn@hotmail.com</a>
+          </p>
+        </div>
+        <div class="biz-card reveal">
+          <h3>用户支持</h3>
+          <p>功能咨询、数据与 iCloud、会员与订阅问题，请参阅支持页面或发送邮件——我们通常在 7 个工作日内回复。</p>
+          <p>
+            <a class="email-link" href="support.html">前往支持页面 →</a>
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <p style="margin: 0">Copyright © 2026 Kitchen 厨房。保留所有权利。</p>
+      <div class="footer-links">
+        <a href="index.html">隐私政策</a>
+        <a href="support.html">支持</a>
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Apple 标准许可协议</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var nav = document.getElementById("nav");
+      var storeLink = document.getElementById("storeLink");
+      var url = window.KITCHEN_APP_STORE_URL || "";
+      if (url && url.indexOf("REPLACE_ME") === -1) {
+        storeLink.setAttribute("href", url);
+        storeLink.setAttribute("target", "_blank");
+        storeLink.setAttribute("rel", "noopener noreferrer");
+      } else {
+        storeLink.setAttribute("href", "#download");
+        storeLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          document.getElementById("download").scrollIntoView({ behavior: "smooth" });
+        });
+      }
+
+      function onScroll() {
+        nav.classList.toggle("is-scrolled", window.scrollY > 8);
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      var nodes = document.querySelectorAll(".reveal");
+      if (!("IntersectionObserver" in window)) {
+        nodes.forEach(function (n) {
+          n.classList.add("is-visible");
+        });
+        return;
+      }
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) {
+              en.target.classList.add("is-visible");
+              io.unobserve(en.target);
+            }
+          });
+        },
+        { rootMargin: "0px 0px -10% 0px", threshold: 0.08 }
+      );
+      nodes.forEach(function (n) {
+        io.observe(n);
+      });
+    })();
+  </script>
+</body>
+</html>

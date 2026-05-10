@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>厨房 Kitchen — 支持 / Support</title>
+  <meta name="description" content="厨房 Kitchen iOS app 的支持页面 / Support page for the Kitchen iOS app." />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #fff8f3;
+      --card: #ffffff;
+      --text: #1f2328;
+      --muted: #57606a;
+      --accent: #ff6452;
+      --border: #eadfd8;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --card: #161b22;
+        --text: #e6edf3;
+        --muted: #8b949e;
+        --border: #30363d;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 20px 56px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+        "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+      line-height: 1.2;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      margin: 16px 0;
+      box-shadow: 0 12px 32px rgba(31, 35, 40, 0.06);
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .footer {
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>厨房 Kitchen — 支持 / Support</h1>
+      <p class="subtitle">菜谱、冰箱、会员与数据问题帮助。</p>
+    </header>
+
+    <section class="card">
+      <h2>联系我们 / Contact</h2>
+      <p>如需帮助、反馈问题、请求删除第三方 AI 请求记录，或咨询会员相关问题，请发送邮件至：</p>
+      <p><a href="mailto:Harry.linn@hotmail.com">Harry.linn@hotmail.com</a></p>
+      <p>We usually reply within 7 business days.</p>
+    </section>
+
+    <section class="card">
+      <h2>常见问题 / FAQ</h2>
+      <ul>
+        <li>本 app 不需要账号即可使用。菜谱与冰箱数据默认保存在本机。</li>
+        <li>开启 iCloud 同步后，数据存放在你自己的 Apple ID 对应的 iCloud 中。</li>
+        <li>AI 功能只会在你主动点击相关按钮时发送当前内容到第三方 AI 服务。</li>
+        <li>订阅、续费、退款与取消由 Apple 处理：iOS 设置 → Apple ID → 订阅。</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>法律文档 / Legal</h2>
+      <p><a href="index.html">隐私政策 / Privacy Policy</a></p>
+      <p><a href="home.html">产品介绍 / Product</a></p>
+      <p><a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Apple Standard EULA</a></p>
+    </section>
+
+    <p class="footer">Last updated: 2026-05-08</p>
+  </main>
+</body>
+</html>
