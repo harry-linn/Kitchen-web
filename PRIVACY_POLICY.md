@@ -35,12 +35,12 @@
 - ❌ 浏览记录、使用统计、崩溃日志(本 app 当前未接入任何分析或崩溃上报 SDK)
 - ❌ 你的购买记录(由 Apple StoreKit 处理,我们只在本地缓存"是 / 否会员"这一个布尔值)
 
-#### 2.3 你的菜谱、冰箱、设置等业务数据
+#### 2.3 你的菜谱、冰箱、购物清单、设置等业务数据
 
 存储在以下两个地方:
 
-1. **你的设备本地**(由 Apple Core Data 管理)
-2. **你自己的 iCloud**(仅当你打开"云同步"开关时,数据存入你 Apple ID 名下的 CloudKit 私有库 / 你创建的家庭共享 zone)
+1. **你的设备本地**（菜谱等由 Apple Core Data 管理；每台冰箱的购物清单待买 / 已购条目存于本地 `UserDefaults`，按家庭区分）
+2. **你自己的 iCloud**（仅当你打开「云同步」开关时，数据存入你 Apple ID 名下的 CloudKit 私有库 / 你创建的家庭共享 zone；**购物清单与冰箱食材写入同一自定义 zone**）
 
 我们(开发者)**无法访问** iCloud 上的数据,Apple 用 end-to-end 加密接管,iCloud 数据的隐私权完全归属于你。
 
@@ -92,7 +92,7 @@
 ### 8. 联系方式
 
 - 开发者:Harry Linn / 林杭
-- 联系邮箱:`Harry.linn@hotmail.com`
+- 联系邮箱:`harry.linn@hotmail.com`
 
 收到邮件后我们会在 7 个工作日内回复。
 
@@ -134,10 +134,10 @@ These requests do **not** include any account, email, Apple ID, device ID, or an
 - ❌ Browsing history, usage analytics, crash logs (no analytics / crash SDK is currently integrated)
 - ❌ Your purchase history (StoreKit is handled by Apple; we only cache a single boolean entitlement locally)
 
-#### 2.3 Your recipes / fridge / settings data lives in
+#### 2.3 Your recipes, fridge, shopping list, and settings data lives in
 
-1. Your device (managed by Apple Core Data)
-2. Your own iCloud (CloudKit private database / shared zones), only when you opt-in via Settings → Account & Services → Cloud Sync.
+1. Your device (recipes via Apple Core Data; per-household shopping list rows in `UserDefaults`)
+2. Your own iCloud (CloudKit private database / shared zones), only when you opt-in via Settings → Account & Services → Cloud Sync. **Shopping list records use the same custom zone as fridge items.**
 
 The developer cannot read iCloud data; Apple end-to-end encrypts it for you.
 
@@ -191,7 +191,7 @@ Kitchen is not directed at children under 13 and does not knowingly collect age-
 ### 8. Contact
 
 - Developer: Harry Linn
-- Email: `Harry.linn@hotmail.com`
+- Email: `harry.linn@hotmail.com`
 
 We respond within 7 business days.
 

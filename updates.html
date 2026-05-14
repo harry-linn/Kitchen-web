@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Kitchen 厨房 — 更新说明</title>
+  <meta name="description" content="Kitchen 厨房 iOS / iPadOS 应用版本更新说明与获取方式。" />
+  <meta name="theme-color" content="#fbfbfd" />
+  <script>
+    window.KITCHEN_BUNDLE_ID = "com.Harry.Kitchen";
+    window.KITCHEN_APP_STORE_FALLBACK = "https://apps.apple.com/cn/app/%E5%8E%A8%E6%88%BF-kitchen/id6767505705";
+    window.KITCHEN_APP_STORE_URL = "https://apps.apple.com/cn/app/%E5%8E%A8%E6%88%BF-kitchen/id6767505705";
+  </script>
+  <style>
+    :root {
+      --bg: #fbfbfd;
+      --card: #fff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --accent: #ff6452;
+      --line: rgba(0, 0, 0, 0.08);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #000;
+        --card: #1d1d1f;
+        --text: #f5f5f7;
+        --muted: #a1a1a6;
+        --line: rgba(255, 255, 255, 0.12);
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", sans-serif;
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--text);
+      background: var(--bg);
+      padding: max(24px, env(safe-area-inset-top)) 20px max(40px, env(safe-area-inset-bottom));
+    }
+    main { max-width: 720px; margin: 0 auto; }
+    a { color: var(--accent); font-weight: 600; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    h1 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.02em; }
+    .sub { color: var(--muted); margin: 0 0 28px; font-size: 15px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px 22px;
+      margin-bottom: 16px;
+    }
+    .card h2 { font-size: 15px; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+    .card ul { margin: 0; padding-left: 1.2em; }
+    .card li { margin: 8px 0; }
+    .row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+    button {
+      font: inherit;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+    button.secondary { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+    code { font-size: 13px; background: rgba(0, 0, 0, 0.06); padding: 2px 6px; border-radius: 6px; }
+    @media (prefers-color-scheme: dark) { code { background: rgba(255, 255, 255, 0.08); } }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="home.html">← 返回介绍页</a></p>
+    <h1>更新说明</h1>
+    <p class="sub">与 app 内<strong>设置 → 关于 → 网页上的更新说明</strong>指向同一页；完整变更历史见 GitHub 仓库中的 <code>CHANGELOG.md</code>。</p>
+
+    <div class="card">
+      <h2>获取与分享</h2>
+      <p id="storeLine">正在解析 App Store 链接…</p>
+      <div class="row">
+        <a id="storeBtn" href="#" role="button" style="display:inline-block;padding:12px 18px;border-radius:12px;background:var(--accent);color:#fff!important;">前往 App Store</a>
+        <button type="button" id="shareBtn" class="secondary">分享给朋友</button>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin-top:16px;margin-bottom:0;">
+        若按钮无法跳转，请确认应用已在你所在地区的 App Store 上架；开发者也可在 <code>home.html</code> 中将 <code>KITCHEN_APP_STORE_URL</code> 设为固定商品页地址。
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>1.0 起上架要点（摘要）</h2>
+      <ul>
+        <li>菜谱、冰箱、购物清单与 iCloud 同区同步（会员 + 开关）。</li>
+        <li>关于页支持检查更新、系统分享（含官网更新入口）。</li>
+        <li>详细功能仍以 app 内使用手册与 <a href="https://github.com/harry-linn/Kitchen/blob/main/CHANGELOG.md" target="_blank" rel="noopener">CHANGELOG</a> 为准。</li>
+      </ul>
+    </div>
+
+    <p style="font-size:14px;color:var(--muted);">
+      <a href="support.html">支持</a> · <a href="index.html">隐私政策</a>
+    </p>
+  </main>
+  <script>
+(function () {
+  var bundleId = window.KITCHEN_BUNDLE_ID || "com.Harry.Kitchen";
+  var fallback = window.KITCHEN_APP_STORE_FALLBACK || "";
+  var storeBtn = document.getElementById("storeBtn");
+  var storeLine = document.getElementById("storeLine");
+  var shareBtn = document.getElementById("shareBtn");
+  var resolved = "";
+
+  function isGood(u) {
+    return u && /^https:\/\//.test(u) && u.indexOf("REPLACE_ME") === -1;
+  }
+
+  function setResolved(u) {
+    resolved = isGood(u) ? u : "";
+    if (resolved) {
+      storeLine.textContent = "在 App Store 搜索「Kitchen」或「厨房」，或直接打开下方链接。";
+      storeBtn.setAttribute("href", resolved);
+      storeBtn.setAttribute("target", "_blank");
+      storeBtn.setAttribute("rel", "noopener noreferrer");
+    } else {
+      storeLine.textContent = "未能自动解析商店链接。请稍后在 App Store 搜索应用名称，或联系支持。";
+      storeBtn.setAttribute("href", "#");
+      storeBtn.addEventListener("click", function (e) { e.preventDefault(); });
+    }
+  }
+
+  async function resolve() {
+    var manual = window.KITCHEN_APP_STORE_URL;
+    if (isGood(manual)) {
+      setResolved(manual);
+      return;
+    }
+    try {
+      var r = await fetch("https://itunes.apple.com/lookup?bundleId=" + encodeURIComponent(bundleId));
+      var j = await r.json();
+      if (j.results && j.results[0] && j.results[0].trackViewUrl) {
+        setResolved(j.results[0].trackViewUrl);
+        return;
+      }
+    } catch (e) {}
+    setResolved(isGood(fallback) ? fallback : "");
+  }
+
+  function updatesPageUrl() {
+    return new URL("updates.html", window.location.href).href;
+  }
+
+  shareBtn.addEventListener("click", async function () {
+    var intro = "推荐试试 Kitchen 厨房：菜谱、冰箱与购物清单（可选 iCloud 与 AI）。";
+    var lines = [intro];
+    if (resolved) lines.push("App Store：" + resolved);
+    lines.push("更新说明：" + updatesPageUrl());
+    var text = lines.join("\n");
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Kitchen 厨房", text: text, url: resolved || updatesPageUrl() });
+        return;
+      } catch (e) {
+        if (e && e.name === "AbortError") return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("已复制分享文案到剪贴板，可粘贴到微信、邮件等。");
+    } catch (e) {
+      prompt("复制以下文字分享：", text);
+    }
+  });
+
+  resolve();
+})();
+  </script>
+</body>
+</html>
