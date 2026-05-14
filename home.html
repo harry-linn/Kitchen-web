@@ -170,6 +170,17 @@ main{padding-top:var(--header-h)}
 @media (min-width:1068px){.pill-row{justify-content:flex-start;margin-left:0;margin-right:0;max-width:none;margin-top:36px}}
 .pill{font-size:12px;font-weight:500;padding:9px 16px;border-radius:999px;background:var(--bg-soft);border:1px solid var(--line);color:var(--text-dim)}
 @media (min-width:1068px){.pill{font-size:13px;padding:10px 18px}}
+.release-strip{
+  margin-top:20px;padding:14px 18px;border-radius:16px;
+  background:var(--accent-soft);border:1px solid rgba(255,100,82,.28);
+  font-size:14px;line-height:1.55;color:var(--text-dim);max-width:min(36rem,100%);
+  margin-left:auto;margin-right:auto;text-align:left;
+}
+@media (min-width:1068px){
+  .release-strip{margin-top:24px;margin-left:0;margin-right:0;max-width:38rem;font-size:15px}
+}
+.release-strip strong{color:var(--text);font-weight:600}
+.release-strip a{color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:3px}
 
 /* 数据带：类似 Apple 规格条 */
 .stats-ribbon{background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -380,6 +391,9 @@ footer{padding:48px var(--pad-x) max(40px,env(safe-area-inset-bottom));border-to
             <span class="pill">iPhone 与 iPad</span>
             <span class="pill">iOS / iPadOS 26.4 或更新</span>
           </div>
+          <p class="release-strip reveal" role="note">
+            <strong>1.0.1 更新（2026-05-13）：</strong>购物清单与冰箱食材在同一 iCloud 自定义区同步；新增意大利语、日语、繁体中文、美式与英式英语界面及小组件文案；会员可查看订阅到期与自动续订，并从设置跳转 App Store 管理订阅。完整条目见<a href="updates.html">更新说明</a>。
+          </p>
         </div>
       </div>
     </header>
@@ -546,7 +560,7 @@ footer{padding:48px var(--pad-x) max(40px,env(safe-area-inset-bottom));border-to
         <dl class="specs reveal">
           <div><dt>平台</dt><dd>iPhone、iPad（通用购买以 App Store 为准）</dd></div>
           <div><dt>系统</dt><dd>iOS / iPadOS 26.4 或更高版本</dd></div>
-          <div><dt>语言</dt><dd>界面支持简体中文与英文（随系统语言切换）</dd></div>
+          <div><dt>语言</dt><dd>简体中文、英文、意大利语、日语、繁体中文、美式 / 英式英语等（app 内语言设置；小组件文案随所选语言）</dd></div>
           <div><dt>网络</dt><dd>离线可用核心菜谱与冰箱；AI 与 iCloud 需互联网</dd></div>
           <div><dt>大小</dt><dd>以 App Store 显示的安装体积为准</dd></div>
         </dl>
